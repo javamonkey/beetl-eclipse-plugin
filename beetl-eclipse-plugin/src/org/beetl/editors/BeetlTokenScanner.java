@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
@@ -29,7 +30,7 @@ public class BeetlTokenScanner implements ITokenScanner {
 	public IToken nextToken() {
 		if(it.hasNext()){
 			current = it.next();
-			return new Token(current.type);
+			return getTokenByBeetlToken(current);
 		}else{
 			current = null;
 			return Token.EOF;
@@ -50,7 +51,9 @@ public class BeetlTokenScanner implements ITokenScanner {
 	}
 	
 	private IToken getTokenByBeetlToken( BeetlToken t){
-		return new ViewToken(t);
+		
+		return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT)));
+		//return new ViewToken(t);
 		
 	
 	}
