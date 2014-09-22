@@ -3,6 +3,7 @@ package org.beetl.editors;
 import java.util.Iterator;
 import java.util.List;
 
+import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
@@ -13,6 +14,8 @@ public class BeetlPartitionTokenScanner implements IPartitionTokenScanner {
 
 	public static String PLACE_HOLDER_PART =  "PLACE_HOLDER_PART";
 	public static String STATIC_TEXT_PART =  "STATIC_TEXT_PART";
+	static Token holderToken = new Token(PLACE_HOLDER_PART);
+	static Token textToken = new Token(STATIC_TEXT_PART);
 	EclipseTokenSource  source = null;
 	Iterator<BeetlToken> it = null;
 	BeetlToken current = null;
@@ -22,21 +25,24 @@ public class BeetlPartitionTokenScanner implements IPartitionTokenScanner {
 	int partionOffset ;
 	@Override
 	public int getTokenLength() {
-		// TODO Auto-generated method stub
-		return 0;
+		return current.end-current.start;
 	}
 
 	@Override
 	public int getTokenOffset() {
-		// TODO Auto-generated method stub
-		return 0;
+		return current.start;
 	}
 
 	@Override
 	public IToken nextToken() {
 		if(it.hasNext()){
-			BeetlToken t = it.next();
-			i
+			current = it.next();
+			
+			if(current.getType()==BeetlLexer.TEXT_TT){
+				return  textToken;
+			}else{
+				return holderToken;
+			}
 			
 		}else{
 			return Token.EOF;

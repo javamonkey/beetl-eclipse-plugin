@@ -2,6 +2,7 @@ package org.beetl.editors;
 
 import java.util.Iterator;
 
+import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
@@ -17,7 +18,7 @@ public class BeetlTokenScanner implements ITokenScanner {
 	@Override
 	public int getTokenLength() {
 		// TODO Auto-generated method stub
-		return current.start-current.end;
+		return current.end-current.start;
 	}
 
 	@Override
@@ -51,8 +52,13 @@ public class BeetlTokenScanner implements ITokenScanner {
 	}
 	
 	private IToken getTokenByBeetlToken( BeetlToken t){
-		
-		return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT)));
+		if(t.type==BeetlLexer.TEXT_TT){
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT)));
+			
+		}else{
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.HOLDER)));
+			
+		}
 		//return new ViewToken(t);
 		
 	

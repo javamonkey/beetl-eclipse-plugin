@@ -13,11 +13,11 @@ public class BeetlDamagerRepairer extends DefaultDamagerRepairer {
 		// TODO Auto-generated constructor stub
 	}
 	
-//	protected   TextAttribute getTokenTextAttribute(IToken token) {
-//		Color color = ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT);
-//		TextAttribute t = new TextAttribute(color);		
-//		return t;
-//		
-//	}
+	protected   TextAttribute getTokenTextAttribute(IToken token) {
+		Color color = ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT);
+		TextAttribute t = new TextAttribute(color);		
+		return t;
+		
+	}
 
 }
