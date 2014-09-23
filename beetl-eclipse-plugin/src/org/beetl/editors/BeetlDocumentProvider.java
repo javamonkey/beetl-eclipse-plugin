@@ -13,10 +13,10 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 		  if (document != null)
 		    {
 		        IDocumentPartitioner partitioner = new FastPartitioner(
-		         new BeetlPartitionTokenScanner(), new String[]
+		         new BeetlPartitionScanner(), new String[]
 		        {
-		        	 BeetlPartitionTokenScanner.PLACE_HOLDER_PART,
-		        	 BeetlPartitionTokenScanner.STATIC_TEXT_PART
+		        	 BeetlPartitionScanner.PLACE_HOLDER_PART,
+		        	 BeetlPartitionScanner.STATIC_TEXT_PART
 		        });
 		        partitioner.connect(document);
 		        document.setDocumentPartitioner(partitioner);

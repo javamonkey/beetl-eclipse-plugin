@@ -10,7 +10,7 @@ public class Source {
 	char[] cs = null;
 	int p;
 	int size = 0;
-	static int EOF = -1;
+	public static int EOF = -1;
 	int mark = 0;
 	LexerState state = null;
 

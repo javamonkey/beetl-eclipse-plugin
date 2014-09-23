@@ -49,7 +49,22 @@ public class BeetlLexer {
 		this.source = source;
 		this.ld = ld;
 		this.source.setState(state);
+		parseFirst();
 	}
+	
+	private void parseFirst(){
+		int c = source.get();
+		if(c != ld.ps[0] && c != ld.ss[0]){
+			state.model = LexerState.STATIC_MODEL;
+		}else if(source.isMatch(ld.ps)&&!source.hasEscape()){
+			
+			state.model = LexerState.PH_START;
+		} else{
+			state.model = LexerState.STATIC_MODEL;
+		}
+	}
+	
+
 
 	public BeetlToken nextToken() {
 		switch (state.model) {
@@ -150,6 +165,7 @@ public class BeetlLexer {
 					return t;
 				}
 			}
+			
 
 			if (c > '0' && c < '9') {
 				t.type = this.INTEGER_TT;
@@ -332,7 +348,7 @@ public class BeetlLexer {
 	}
 
 	public static void main(String[] args) {
-		String template = "a${1+'2'}";
+		String template = "${1+'2'}";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 

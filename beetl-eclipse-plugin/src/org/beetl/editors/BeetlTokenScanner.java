@@ -12,9 +12,14 @@ import org.eclipse.jface.text.rules.Token;
 
 public class BeetlTokenScanner implements ITokenScanner {
 
-	EclipseTokenSource source = null;
+	BeetlTokenSource source = null;
 	Iterator<BeetlToken> it = null;
 	BeetlToken current = null;
+	String type = null;
+	int offset = 0;
+	public BeetlTokenScanner(String type){
+		this.type = type;
+	}
 	@Override
 	public int getTokenLength() {
 		// TODO Auto-generated method stub
@@ -24,7 +29,7 @@ public class BeetlTokenScanner implements ITokenScanner {
 	@Override
 	public int getTokenOffset() {
 		// TODO Auto-generated method stub
-		return current.start;
+		return offset+current.start;
 	}
 
 	@Override
@@ -46,7 +51,8 @@ public class BeetlTokenScanner implements ITokenScanner {
 	public void setRange(IDocument arg0, int arg1, int arg2) {
 		String text = arg0.get();
 		String content = text.substring(arg1,arg1+arg2);
-		source = new EclipseTokenSource();
+		offset = arg1;
+		source = new BeetlTokenSource();
 		source.parse(content);
 		it = source.tokens.iterator();
 	}
@@ -55,7 +61,14 @@ public class BeetlTokenScanner implements ITokenScanner {
 		if(t.type==BeetlLexer.TEXT_TT){
 			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT)));
 			
-		}else{
+		}else if(t.type==BeetlLexer.INTEGER_TT){
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.NUMBER)));
+			
+		}else if(t.type==BeetlLexer.STRING_TT){
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STRING)));
+			
+		}
+		else{
 			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.HOLDER)));
 			
 		}

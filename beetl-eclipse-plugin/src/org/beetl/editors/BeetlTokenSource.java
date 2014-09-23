@@ -8,11 +8,11 @@ import org.beetl.core.parser.BeetlToken;
 import org.beetl.core.parser.LexerDelimiter;
 import org.beetl.core.parser.Source;
 
-public class EclipseTokenSource {
+public class BeetlTokenSource {
 	String content ;
 	List<BeetlToken> tokens  = new LinkedList<BeetlToken>();
 	LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
-	public EclipseTokenSource(){
+	public BeetlTokenSource(){
 		
 	}
 	

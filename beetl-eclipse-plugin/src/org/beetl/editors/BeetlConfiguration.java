@@ -20,14 +20,16 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 	
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
-		BeetlDamagerRepairer dr = new BeetlDamagerRepairer(new BeetlTokenScanner());
-		reconciler.setDamager(dr, BeetlPartitionTokenScanner.PLACE_HOLDER_PART);
-		reconciler.setRepairer(dr, BeetlPartitionTokenScanner.PLACE_HOLDER_PART);
+		
+		BeetlDamagerRepairer dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.PLACE_HOLDER_PART));
+		reconciler.setDamager(dr, BeetlPartitionScanner.PLACE_HOLDER_PART);
+		reconciler.setRepairer(dr, BeetlPartitionScanner.PLACE_HOLDER_PART);
 		
 		
-		dr = new BeetlDamagerRepairer(new BeetlTokenScanner());
-		reconciler.setDamager(dr, BeetlPartitionTokenScanner.STATIC_TEXT_PART);
-		reconciler.setRepairer(dr, BeetlPartitionTokenScanner.STATIC_TEXT_PART);
+		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.STATIC_TEXT_PART));
+		reconciler.setDamager(dr, BeetlPartitionScanner.STATIC_TEXT_PART);
+		reconciler.setRepairer(dr, BeetlPartitionScanner.STATIC_TEXT_PART);
+		
 		
 		
 		return reconciler;
