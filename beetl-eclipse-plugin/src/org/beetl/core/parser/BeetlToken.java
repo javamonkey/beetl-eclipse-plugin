@@ -2,7 +2,7 @@ package org.beetl.core.parser;
 
 public class BeetlToken {
 	public String text;
-	public int line, col,start,end, type;
+	public int line, col,start,end, type,channel;
 	public BeetlToken(){
 		
 	}

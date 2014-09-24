@@ -7,6 +7,7 @@ package org.beetl.core.parser;
  * 
  */
 public class BeetlLexer {
+
 	// 静态文本
 	public final static int TEXT_TT = 0;;
 	// 站位符开始
@@ -32,6 +33,18 @@ public class BeetlLexer {
 
 	public final static int STRING_TT = 13;
 
+	public final static int ST_SS_TT = 14;
+	public final static int ST_SE_TT = 15;
+
+	public final static int WS_TT = 16;
+	public final static int VAR_TT = 17;
+	public final static int IF_TT = 18;
+
+	public final static int LEFT_BRACE_TT = 19;
+	public final static int RIGHT_BRACE_TT = 20;
+
+	public final static int ASSIN_TT = 20;
+
 	public static String PERIOD_CHAR = ".";
 	public static String ADD_CHAR = "+";
 	public static String MIN_CHAR = "-";
@@ -51,20 +64,18 @@ public class BeetlLexer {
 		this.source.setState(state);
 		parseFirst();
 	}
-	
-	private void parseFirst(){
+
+	private void parseFirst() {
 		int c = source.get();
-		if(c != ld.ps[0] && c != ld.ss[0]){
+		if (c != ld.ps[0] && c != ld.ss[0]) {
 			state.model = LexerState.STATIC_MODEL;
-		}else if(source.isMatch(ld.ps)&&!source.hasEscape()){
-			
+		} else if (source.isMatch(ld.ps) && !source.hasEscape()) {
+
 			state.model = LexerState.PH_START;
-		} else{
+		} else {
 			state.model = LexerState.STATIC_MODEL;
 		}
 	}
-	
-
 
 	public BeetlToken nextToken() {
 		switch (state.model) {
@@ -72,11 +83,152 @@ public class BeetlLexer {
 			return textModel();
 		case LexerState.PH_MODEL:
 			return holderModel();
+		case LexerState.ST_MODEL:
+			return statementModel();
 		case LexerState.PH_START:
 			return placeHolderStartToken();
-
+		case LexerState.ST_START:
+			return statmentStartToken();
 		}
+
 		return null;
+	}
+
+	private BeetlToken statementModel() {
+		int c;
+		BeetlToken t = new BeetlToken();
+		t.start = source.pos();
+		t.col = state.col;
+		t.line = state.line;
+
+		// 判断是否是结束符号
+		while ((c = source.get()) != Source.EOF) {
+			if (c == this.ld.se[0] && source.isMatch(this.ld.se)) {
+				if (!source.hasEscape()) {
+					state.model = LexerState.STATIC_MODEL;
+					t.type = ST_SE_TT;
+					t.text = this.ld.strSe;
+					source.consume(this.ld.se.length);
+					t.end = source.pos();
+					return t;
+				}
+			} else if (c == 'v') {
+				if (source.isMatch("var".toCharArray())) {
+					return this.getToken(3, VAR_TT);
+
+				} else {
+					t.type = ID_TT;
+					idToken(t);
+					return t;
+				}
+			} else if (c == 'i') {
+				if (source.isMatch("if".toCharArray())) {
+					t.type = IF_TT;
+					return this.getToken(2, IF_TT);
+				} else {
+					t.type = ID_TT;
+					idToken(t);
+					return t;
+				}
+			} else if (c == '{') {
+				return this.getToken(1, this.LEFT_BRACE_TT);
+			} else if (c == '}') {
+				return this.getToken(1, this.RIGHT_BRACE_TT);
+			} else if (c == '(') {
+				return this.getToken(1, this.LEFT_PAR_TT);
+			} else if (c == ')') {
+				return this.getToken(1, RIGHT_PAR_TT);
+			} else if (c == ' ') {
+				return this.consumeWS();
+			} else if (c == '\r' || c == '\n') {
+				consumeMoreCR(c);
+			} else {
+				throw new RuntimeException("不支持字符 " + c);
+			}
+		}
+
+		return null;
+
+	}
+
+	private BeetlToken holderModel() {
+
+		BeetlToken t = new BeetlToken();
+		t.start = source.pos();
+		t.col = state.col;
+		t.line = state.line;
+		int c = source.get();
+
+		// 判断是否是结束符号
+		if (c == this.ld.pe[0] && source.isMatch(this.ld.pe)) {
+			if (!source.hasEscape()) {
+				state.model = LexerState.STATIC_MODEL;
+				t.type = this.PH_SE_TT;
+				t.text = this.ld.strPe;
+				source.consume(this.ld.pe.length);
+				t.end = source.pos();
+				return t;
+			}
+		} else if (c > '0' && c < '9') {
+			t.type = this.INTEGER_TT;
+			numberToken(t);
+			return t;
+		} else if (c == '\'' || c == '\"') {
+			t.type = this.STRING_TT;
+			stringToken(t);
+			return t;
+		} else if (c == '.') {
+			if (this.forwardMatch('0', '9')) {
+				t.type = this.FLOAT_TT;
+				numberToken(t);
+				return t;
+			} else {
+				source.consume();
+				t.end = source.pos();
+				t.text = this.PERIOD_CHAR;
+				t.type = this.PERIOD_TT;
+				return t;
+			}
+		} else if (c == '+') {
+			if (this.forwardMatch('+')) {
+				source.consume(2);
+				t.end = source.pos();
+				t.text = this.INCREASE_CHAR;
+				t.type = this.INCREASE_TT;
+			} else {
+				source.consume();
+				t.end = source.pos();
+				t.type = this.ADD_TT;
+				t.text = this.ADD_CHAR;
+				return t;
+			}
+
+		} else if (c == '(') {
+			source.consume();
+			t.end = source.pos();
+			t.type = this.LEFT_PAR_TT;
+			t.text = this.LEFT_PAR_CHAR;
+			return t;
+
+		} else if (c == ')') {
+			source.consume();
+			t.end = source.pos();
+			t.type = this.RIGHT_PAR_TT;
+			t.text = this.RIGHT_PAR_CHAR;
+			return t;
+		} else if (c == ' ') {
+			return consumeWS();
+		} else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+			t.type = ID_TT;
+			idToken(t);
+			return t;
+		} else {
+			throw new RuntimeException("not support " + c);
+		}
+
+		// 文件结束
+		return null;
+
 	}
 
 	private BeetlToken textModel() {
@@ -120,115 +272,6 @@ public class BeetlLexer {
 		if (start == source.pos())
 			return null;
 		return getToken(start, source.pos(), col, line, TEXT_TT);
-
-	}
-
-	private void consumeMoreCR(int crFirst) {
-		state.addLine();
-		if (state.cr_len == 1) {
-			source.consume();
-			return;
-		} else if (state.cr_len == 2) {
-			source.consume(2);
-		} else {
-			int c = source.get();
-			if (c == source.EOF) {
-				return;
-			} else if (crFirst == '\n' && c == '\r') {
-				state.cr_len = 2;
-				source.consume(1);
-			} else if (crFirst == '\r' && c == '\n') {
-				state.cr_len = 2;
-				source.consume(1);
-			} else {
-				state.cr_len = 1;
-			}
-		}
-	}
-
-	private BeetlToken holderModel() {
-		int c;
-		BeetlToken t = new BeetlToken();
-		t.start = source.pos();
-		t.col = state.col;
-		t.line = state.line;
-
-		while ((c = source.get()) != source.EOF) {
-			// 判断是否是结束符号
-			if (c == this.ld.pe[0] && source.isMatch(this.ld.pe)) {
-				if (!source.hasEscape()) {
-					state.model = LexerState.STATIC_MODEL;
-					t.type = this.PH_SE_TT;
-					t.text = this.ld.strPe;
-					source.consume(this.ld.pe.length);
-					t.end = source.pos();
-					return t;
-				}
-			}
-			
-
-			if (c > '0' && c < '9') {
-				t.type = this.INTEGER_TT;
-				numberToken(t);
-				return t;
-			} else if (c == '\'' || c == '\"') {
-				t.type = this.STRING_TT;
-				stringToken(t);
-				return t;
-			} else if (c == '.') {
-				if (this.forwardMatch('0', '9')) {
-					t.type = this.FLOAT_TT;
-					numberToken(t);
-					return t;
-				} else {
-					source.consume();
-					t.end = source.pos();
-					t.text = this.PERIOD_CHAR;
-					t.type = this.PERIOD_TT;
-					return t;
-				}
-			} else if (c == '+') {
-				if (this.forwardMatch('+')) {
-					source.consume(2);
-					t.end = source.pos();
-					t.text = this.INCREASE_CHAR;
-					t.type = this.INCREASE_TT;
-				} else {
-					source.consume();
-					t.end = source.pos();
-					t.type = this.ADD_TT;
-					t.text = this.ADD_CHAR;
-					return t;
-				}
-
-			} else if (c == '(') {
-				source.consume();
-				t.end = source.pos();
-				t.type = this.LEFT_PAR_TT;
-				t.text = this.LEFT_PAR_CHAR;
-				return t;
-
-			} else if (c == ')') {
-				source.consume();
-				t.end = source.pos();
-				t.type = this.RIGHT_PAR_TT;
-				t.text = this.RIGHT_PAR_CHAR;
-				return t;
-			} else if (c == ' ') {
-				// skip continue;
-				source.consume();
-				continue;
-			} else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-				t.type = ID_TT;
-				idToken(t);
-				return t;
-			} else {
-				throw new RuntimeException("not support");
-			}
-		}
-
-		// 文件结束
-		return null;
 
 	}
 
@@ -299,20 +342,41 @@ public class BeetlLexer {
 	}
 
 	private BeetlToken placeHolderStartToken() {
+		state.model = LexerState.PH_MODEL;
+		return getToken(this.ld.ps.length, this.PH_SS_TT, this.ld.strSs);
+	}
+
+	private BeetlToken statmentStartToken() {
+		state.model = LexerState.ST_MODEL;
+		return getToken(this.ld.ss.length, this.ST_SS_TT, this.ld.strSs);
+	}
+
+	private BeetlToken getToken(int len, int type, String text) {
 		BeetlToken token = new BeetlToken();
 		token.start = source.pos();
-
-		source.consume(ld.ps.length);
+		source.consume(len);
 		int end = source.pos();
-
 		token.end = end;
 		token.line = state.line;
-		token.type = this.PH_SS_TT;
+		token.type = type;
 		token.col = state.col;
-		token.text = ld.strPs;
+		token.text = text;
 		state.model = LexerState.PH_MODEL;
 		return token;
+	}
 
+	private BeetlToken getToken(int len, int type) {
+		BeetlToken token = new BeetlToken();
+		token.start = source.pos();
+		source.consume(len);
+		int end = source.pos();
+		token.end = end;
+		token.line = state.line;
+		token.type = type;
+		token.col = state.col;
+		token.text = source.getRange(token.start, end);
+
+		return token;
 	}
 
 	private BeetlToken getToken(int start, int end, int col, int line, int type) {
@@ -345,6 +409,51 @@ public class BeetlLexer {
 			}
 		}
 		return false;
+	}
+
+	private void consumeMoreCR(int crFirst) {
+		state.addLine();
+		if (state.cr_len == 1) {
+			source.consume();
+			return;
+		} else if (state.cr_len == 2) {
+			source.consume(2);
+		} else {
+			int c = source.get();
+			if (c == source.EOF) {
+				return;
+			} else if (crFirst == '\n' && c == '\r') {
+				state.cr_len = 2;
+				source.consume(1);
+			} else if (crFirst == '\r' && c == '\n') {
+				state.cr_len = 2;
+				source.consume(1);
+			} else {
+				state.cr_len = 1;
+			}
+		}
+	}
+
+	private BeetlToken consumeWS() {
+		int c = source.get();
+		int start = source.pos();
+		while ((c = source.get()) != Source.EOF) {
+			if (c == ' ' || c == '\t') {
+				source.consume();
+				continue;
+			}
+		}
+
+		BeetlToken token = new BeetlToken();
+		token.col = state.col;
+		token.start = start;
+		token.end = source.pos();
+		token.line = state.line;
+		token.text = "";
+		token.type = WS_TT;
+		token.channel = 1;
+		return token;
+
 	}
 
 	public static void main(String[] args) {

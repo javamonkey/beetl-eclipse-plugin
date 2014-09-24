@@ -13,9 +13,9 @@ public class LexerState {
 	public static final int PH_MODEL = 2;
 	public static final int PH_END = 3;
 	
-	public static final int ST_START = 2;
-	public static final int ST_MODEL = 3;
-	public static final int ST_END = 4;
+	public static final int ST_START = 4;
+	public static final int ST_MODEL = 5;
+	public static final int ST_END = 6;
 	
 	
 	public void addLine(){
