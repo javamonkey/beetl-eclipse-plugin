@@ -62,7 +62,7 @@ public class BeetlToken {
 	@Override
 	public String toString() {
 		return "Token [text=" + text + ", line=" + line + ", col=" + col
-				+ ", start=" + start + ", end=" + end + ", type=" + type + "]";
+				+ ", start=" + start + ", end=" + end + ", type=" + BeetlLexer.tokens[type] + "]";
 	}
 	
 	
