@@ -1,5 +1,6 @@
 package org.beetl.editors;
 
+import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.LexerDelimiter;
 import org.beetl.core.parser.LexerState;
 import org.beetl.core.parser.Source;
@@ -11,12 +12,15 @@ import org.eclipse.jface.text.rules.Token;
 public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	public static String PLACE_HOLDER_PART =  "PLACE_HOLDER_PART";
+	public static String STATEMENT_PART =  "STATEMENT_PART";	
 	public static String STATIC_TEXT_PART =  "STATIC_TEXT_PART";
 	static Token holderToken = new Token(PLACE_HOLDER_PART);
 	static Token textToken = new Token(STATIC_TEXT_PART);
+	static Token statementToken = new Token(STATEMENT_PART);
+	
 	Source source = null;
 	LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
-
+	BeetlLexer lexer = null;
 	int i = 0;
 	String contentType = null;
 	int offset ;
@@ -64,13 +68,16 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		  this.offset = source.pos();
 		  int c ;
 		   while((c=source.get())!=Source.EOF){
-			   if(c!=ld.ps[0]){
+			   if(c!=ld.ps[0]&&c!=ld.ss[0]){
 				   source.consume();
 				   continue;
 			   }else{
-				     if(source.isMatch(ld.ps)&&!source.hasEscape()){
+				     if(c==ld.ps[0]&&source.isMatch(ld.ps)&&!source.hasEscape()){
 				    	 break ;
-					}else{
+					}else if(c==ld.ss[0]&&source.isMatch(ld.ss)&&!source.hasEscape()){
+				    	 break ;
+					}
+				     else{
 						 source.consume();
 						 continue;
 					}
@@ -105,9 +112,9 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	@Override
 	public void setRange(IDocument document, int arg1, int arg2) {
 		String text = document.get();
-		content = text.substring(arg1,arg1+arg2);
-		source = new Source(content);
-		source.setState(new LexerState());
+		content = text.substring(arg1,arg1+arg2);		
+		source = new Source(content);		
+		lexer = new BeetlLexer(source,ld);
 
 	}
 

@@ -48,6 +48,8 @@ public class BeetlLexer {
 	
 	public final static int EQUALS_TT = 21;
 	public final static int ASSIN_TT = 22;
+	public final static int SEMI_TT = 23;
+	
 	
 	
 	public static String[] tokens = new String[]{
@@ -55,8 +57,10 @@ public class BeetlLexer {
 		"INTERGER","FLOAT","++","--","+",
 		"-","(",")","STRING","SS",
 		"SE","WS","var","if","{",
-		"}","==","="
+		"}","==","=",";"
 	};
+	
+	
 	
 
 
@@ -161,7 +165,11 @@ public class BeetlLexer {
 			} else if (c == '\r' || c == '\n') {
 				consumeMoreCR(c);
 				continue;
-			} else if(c=='='){
+			}else if (c == ';' ) {
+				return this.getCharToken(1, SEMI_TT);
+				
+			}
+			else if(c=='='){
 				if(this.forwardMatch('=')){
 					return this.getCharToken(2, this.EQUALS_TT);
 				}else{
@@ -435,21 +443,22 @@ public class BeetlLexer {
 		state.addLine();
 		if (state.cr_len == 1) {
 			source.consume();
-			return;
+			
 		} else if (state.cr_len == 2) {
 			source.consume(2);
 		} else {
-			int c = source.get();
+			int c = source.get(1);
 			if (c == source.EOF) {
 				return;
 			} else if (crFirst == '\n' && c == '\r') {
 				state.cr_len = 2;
-				source.consume(1);
+				source.consume(2);
 			} else if (crFirst == '\r' && c == '\n') {
 				state.cr_len = 2;
-				source.consume(1);
+				source.consume(2);
 			} else {
 				state.cr_len = 1;
+				source.consume();
 			}
 		}
 	}
@@ -482,7 +491,7 @@ public class BeetlLexer {
 	
 
 	public static void main(String[] args) {
-		String template = "<%if(a==1){ a=2}%>";
+		String template = "<%if(a==1){ a=2;\n var b=3;}%>";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 
