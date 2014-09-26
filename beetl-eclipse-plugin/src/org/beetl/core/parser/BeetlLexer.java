@@ -36,6 +36,7 @@ public class BeetlLexer {
 
 	public final static int STRING_TT = 13;
 
+	//控制语句定界符
 	public final static int ST_SS_TT = 14;
 	public final static int ST_SE_TT = 15;
 
@@ -440,7 +441,7 @@ public class BeetlLexer {
 	}
 
 	private void consumeMoreCR(int crFirst) {
-		state.addLine();
+		
 		if (state.cr_len == 1) {
 			source.consume();
 			
@@ -461,6 +462,7 @@ public class BeetlLexer {
 				source.consume();
 			}
 		}
+		state.addLine();
 	}
 
 	private BeetlToken consumeWS() {
@@ -491,7 +493,7 @@ public class BeetlLexer {
 	
 
 	public static void main(String[] args) {
-		String template = "<%if(a==1){ a=2;\n var b=3;}%>";
+		String template = "a\r\n<%1%>";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 

@@ -16,7 +16,8 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 		         new BeetlPartitionScanner(), new String[]
 		        {
 		        	 BeetlPartitionScanner.PLACE_HOLDER_PART,
-		        	 BeetlPartitionScanner.STATIC_TEXT_PART
+		        	 BeetlPartitionScanner.STATIC_TEXT_PART,
+		        	 BeetlPartitionScanner.STATEMENT_PART
 		        });
 		        partitioner.connect(document);
 		        document.setDocumentPartitioner(partitioner);

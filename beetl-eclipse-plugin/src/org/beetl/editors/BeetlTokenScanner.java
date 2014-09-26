@@ -67,9 +67,15 @@ public class BeetlTokenScanner implements ITokenScanner {
 		}else if(t.type==BeetlLexer.STRING_TT){
 			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STRING)));
 			
+		}else if(t.type==BeetlLexer.ST_SS_TT||t.type==BeetlLexer.ST_SE_TT){
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.ST)));
+			
+		}else if(t.type==BeetlLexer.PH_SE_TT||t.type==BeetlLexer.PH_SS_TT){
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.ST)));
+			
 		}
 		else{
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.HOLDER)));
+			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.DEFAULT)));
 			
 		}
 		//return new ViewToken(t);

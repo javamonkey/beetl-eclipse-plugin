@@ -1,8 +1,8 @@
 package org.beetl.editors;
 
 import org.beetl.core.parser.BeetlLexer;
+import org.beetl.core.parser.BeetlToken;
 import org.beetl.core.parser.LexerDelimiter;
-import org.beetl.core.parser.LexerState;
 import org.beetl.core.parser.Source;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
@@ -27,7 +27,10 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	int partionOffset ;
 	String content = null;
 	int length = 0;
-	
+	BeetlToken lastToken = new BeetlToken();;
+	public BeetlPartitionScanner(){
+		lastToken.type = -2 ;
+	}
 	
 	@Override
 	public int getTokenLength() {
@@ -41,73 +44,46 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	@Override
 	public IToken nextToken() {
-		int c = source.get();
-		if(c==Source.EOF){
-			return Token.EOF;
-		}
 		
-		if (c != ld.ps[0] ) {
-		  
-		   return  consumeText();
-			
-		} else  if(source.isMatch(ld.ps)){
-
-			if (source.hasEscape()) {
-				 return  consumeText();
-			} else {
-				return holderText();
+		BeetlToken token = null;
+		while((token=lexer.nextToken())!=null){
+			if(token.getType()==BeetlLexer.TEXT_TT){
+				offset = token.start;
+				length = token.end-token.start;
+				this.lastToken = token;
+				return textToken;
+			}else if(token.getType()==BeetlLexer.ST_SS_TT){
+				offset = token.start;
+				while((token=lexer.nextToken())!=null){
+					if(token.getType()==BeetlLexer.ST_SE_TT){
+						length = token.end-lastToken.end;
+						this.lastToken = token;
+						return statementToken;
+					}
+				}
+				return Token.EOF;
+			}else if(token.getType()==BeetlLexer.PH_SS_TT){
+				offset = token.start;
+				while((token=lexer.nextToken())!=null){
+					if(token.getType()==BeetlLexer.PH_SE_TT){
+						length = token.end-lastToken.end;
+						this.lastToken = token;
+						return this.holderToken;
+					}
+				}
+				return Token.EOF;
+				
+			}else{
+				return Token.EOF;
 			}
-
-		}else{
-			throw new RuntimeException(c+"");
+			
+			
 		}
+		return Token.EOF;
 		
 	}
 	
-	private Token consumeText(){
-		  this.offset = source.pos();
-		  int c ;
-		   while((c=source.get())!=Source.EOF){
-			   if(c!=ld.ps[0]&&c!=ld.ss[0]){
-				   source.consume();
-				   continue;
-			   }else{
-				     if(c==ld.ps[0]&&source.isMatch(ld.ps)&&!source.hasEscape()){
-				    	 break ;
-					}else if(c==ld.ss[0]&&source.isMatch(ld.ss)&&!source.hasEscape()){
-				    	 break ;
-					}
-				     else{
-						 source.consume();
-						 continue;
-					}
-			   }
-		   }
-			this.length = source.pos()-offset;
-			return textToken;
-	}
 	
-	private Token holderText(){
-		  this.offset = source.pos();
-		  int c ;
-		   while((c=source.get())!=Source.EOF){
-			   if(c!=ld.pe[0]){
-				   source.consume();
-				   continue;
-			   }else{
-				     if(source.isMatch(ld.pe)&&!source.hasEscape()){
-				    	 source.consume(ld.pe.length);
-				    	 break ;
-					}else{
-						 source.consume();
-						 continue;
-					}
-			   }
-		   }
-			this.length = source.pos()-offset;
-			return holderToken;
-	}
-
 
 	@Override
 	public void setRange(IDocument document, int arg1, int arg2) {

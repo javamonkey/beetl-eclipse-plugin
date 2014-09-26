@@ -31,6 +31,11 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(dr, BeetlPartitionScanner.STATIC_TEXT_PART);
 		
 		
+		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.STATEMENT_PART));
+		reconciler.setDamager(dr, BeetlPartitionScanner.STATEMENT_PART);
+		reconciler.setRepairer(dr, BeetlPartitionScanner.STATEMENT_PART);
+		
+		
 		
 		return reconciler;
 	}
