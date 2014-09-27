@@ -2,11 +2,13 @@ package org.beetl.core.parser;
 
 public class BeetlToken {
 	public String text;
-	public int line, col,start,end, type,channel;
-	public BeetlToken(){
-		
+	public int line, col, start, end, type, channel;
+
+	public BeetlToken() {
+
 	}
-	public BeetlToken(int type,String text){
+
+	public BeetlToken(int type, String text) {
 		this.type = type;
 		this.text = text;
 	}
@@ -61,9 +63,10 @@ public class BeetlToken {
 
 	@Override
 	public String toString() {
+		String typeStr = type != -1 ? BeetlLexer.tokens[type] : "ERROR";
 		return "Token [text=" + text + ", line=" + line + ", col=" + col
-				+ ", start=" + start + ", end=" + end + ", type=" + BeetlLexer.tokens[type] + "]";
+				+ ", start=" + start + ", end=" + end + ", type=" + typeStr
+				+ "]";
 	}
-	
-	
+
 }

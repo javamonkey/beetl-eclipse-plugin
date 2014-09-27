@@ -17,72 +17,82 @@ public class BeetlTokenScanner implements ITokenScanner {
 	BeetlToken current = null;
 	String type = null;
 	int offset = 0;
-	public BeetlTokenScanner(String type){
+
+	public BeetlTokenScanner(String type) {
 		this.type = type;
 	}
+
 	@Override
 	public int getTokenLength() {
 		// TODO Auto-generated method stub
-		return current.end-current.start;
+		return current.end - current.start;
 	}
 
 	@Override
 	public int getTokenOffset() {
 		// TODO Auto-generated method stub
-		return offset+current.start;
+		return offset + current.start;
 	}
 
 	@Override
 	public IToken nextToken() {
-		if(it.hasNext()){
+		if (it.hasNext()) {
 			current = it.next();
 			return getTokenByBeetlToken(current);
-		}else{
+		} else {
 			current = null;
 			return Token.EOF;
 		}
-	
-		//return getTokenByBeetlToken(current);
-		
-		
+
+		// return getTokenByBeetlToken(current);
+
 	}
 
 	@Override
 	public void setRange(IDocument arg0, int arg1, int arg2) {
 		String text = arg0.get();
-		String content = text.substring(arg1,arg1+arg2);
+		String content = text.substring(arg1, arg1 + arg2);
 		offset = arg1;
-		source = new BeetlTokenSource();
+		source = new BeetlTokenSource(this.type);
 		source.parse(content);
+		System.out.println("scan:" + content);
 		it = source.tokens.iterator();
+		System.out.println("tokens:" + source.tokens);
 	}
-	
-	private IToken getTokenByBeetlToken( BeetlToken t){
-		if(t.type==BeetlLexer.TEXT_TT){
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STATIC_TEXT)));
-			
-		}else if(t.type==BeetlLexer.INTEGER_TT){
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.NUMBER)));
-			
-		}else if(t.type==BeetlLexer.STRING_TT){
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.STRING)));
-			
-		}else if(t.type==BeetlLexer.ST_SS_TT||t.type==BeetlLexer.ST_SE_TT){
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.ST)));
-			
-		}else if(t.type==BeetlLexer.PH_SE_TT||t.type==BeetlLexer.PH_SS_TT){
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.ST)));
-			
-		}
-		else{
-			return new Token(new TextAttribute(ColorManager.instance().getColor(SyntaxColorConstants.DEFAULT)));
-			
-		}
-		//return new ViewToken(t);
-		
-	
-	}
-	
 
+	private IToken getTokenByBeetlToken(BeetlToken t) {
+		if (t.type == BeetlLexer.TEXT_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATIC_TEXT)));
+
+		} else if (t.type == BeetlLexer.STRING_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STRING)));
+
+		} else if (t.type == BeetlLexer.VAR_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STRING)));
+
+		} else if (t.type == BeetlLexer.ST_SS_TT
+				|| t.type == BeetlLexer.ST_SE_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.ST)));
+
+		} else if (t.type == BeetlLexer.PH_SE_TT
+				|| t.type == BeetlLexer.PH_SS_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.HOLDER)));
+
+		} else if (t.type == BeetlLexer.ERROR_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.ERROR)));
+		} else {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.DEFAULT)));
+
+		}
+		// return new ViewToken(t);
+
+	}
 
 }
