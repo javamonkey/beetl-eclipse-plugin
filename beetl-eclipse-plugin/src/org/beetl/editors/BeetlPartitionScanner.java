@@ -48,26 +48,31 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				offset = token.start;
 				length = token.end - token.start;
 				this.lastToken = token;
+				debug(textToken);
 				return textToken;
 			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
 				offset = token.start;
 				while ((token = lexer.nextToken()) != null) {
+					length = token.end - lastToken.end;				
 					if (token.getType() == BeetlLexer.ST_SE_TT) {
-						length = token.end - lastToken.end;
-						this.lastToken = token;
-						return statementToken;
+						break;
 					}
 				}
+					
+				this.lastToken = token;
+				debug(statementToken);
 				return statementToken;
 			} else if (token.getType() == BeetlLexer.PH_SS_TT) {
 				offset = token.start;
 				while ((token = lexer.nextToken()) != null) {
-					if (token.getType() == BeetlLexer.PH_SE_TT) {
-						length = token.end - lastToken.end;
-						this.lastToken = token;
-						return this.holderToken;
+					length = token.end - lastToken.end;	
+					if (token.getType() == BeetlLexer.PH_SE_TT) {	
+						break ;
 					}
 				}
+			
+				this.lastToken = token;
+				debug(holderToken);
 				return this.holderToken;
 
 			} else {
@@ -77,6 +82,9 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		}
 		return Token.EOF;
 
+	}
+	private void debug(Token t){
+		System.out.println("offset="+this.offset+" len="+this.length+" type="+t.getData());
 	}
 
 	@Override
@@ -105,6 +113,23 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			}
 		}
 		setRange(document, offset, length);
+	}
+	
+	public void testInit(String str){
+		this.content = str;
+		source = new Source(content);
+		lexer = new BeetlLexer(source, ld);
+		lastToken = new BeetlToken();
+	}
+	public static void main(String[] args){
+		BeetlPartitionScanner s = new BeetlPartitionScanner();
+		String test = "123";
+		s.testInit(test);
+		Token token = null;
+		while((token=(Token)s.nextToken())!=Token.EOF){
+			System.out.println(s.offset+":"+s.length);
+		}
+		
 	}
 
 }

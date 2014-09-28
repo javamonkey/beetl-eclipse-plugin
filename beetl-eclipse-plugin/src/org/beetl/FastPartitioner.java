@@ -327,14 +327,14 @@ public class FastPartitioner implements IDocumentPartitioner,
 							+ partition.getLength())
 						reparseStart = partitionStart;
 					--first;
-				} else if (reparseStart == e.getOffset()
+				}/* else if (reparseStart == e.getOffset()
 						&& reparseStart == partition.getOffset()
 								+ partition.getLength()) {
 					partitionStart = partition.getOffset();
 					contentType = partition.getType();
 					reparseStart = partitionStart;
 					--first;
-				} else {
+				} */else {
 					partitionStart = partition.getOffset()
 							+ partition.getLength();
 					contentType = IDocument.DEFAULT_CONTENT_TYPE;
