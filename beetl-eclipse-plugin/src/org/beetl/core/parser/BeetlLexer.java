@@ -51,11 +51,10 @@ public class BeetlLexer {
 	public final static int ASSIN_TT = 22;
 	public final static int SEMI_TT = 23;
 	public final static int CR_TT = 24;
-	
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
-			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";" ,"CR"};
+			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR" };
 
 	LexerState state = null;
 	Source source = null;
@@ -243,7 +242,7 @@ public class BeetlLexer {
 						continue;
 					} else {
 						state.model = LexerState.PH_START;
-						break ;
+						break;
 					}
 
 				} else if (c == ld.ss[0] && source.isMatch(ld.ss)) {
@@ -260,16 +259,16 @@ public class BeetlLexer {
 				}
 			}
 		}
-		if(start==source.pos()){
-			if(state.model == LexerState.PH_START){
+		if (start == source.pos()) {
+			if (state.model == LexerState.PH_START) {
 				return this.placeHolderStartToken();
-			}else if(state.model==LexerState.ST_START){
+			} else if (state.model == LexerState.ST_START) {
 				return this.statmentStartToken();
-			}else{
+			} else {
 				return null;
 			}
 		}
-		
+
 		return getStaticTextToken(start, source.pos(), col, line);
 
 	}
@@ -456,29 +455,29 @@ public class BeetlLexer {
 		return false;
 	}
 
-	private BeetlToken getCRToken(int crFirst){
-		if(state.cr_len!=0){
+	private BeetlToken getCRToken(int crFirst) {
+		if (state.cr_len != 0) {
 			return this.getCharToken(state.cr_len, CR_TT);
-		}else{
+		} else {
 			int c = source.get(1);
 			if (c == source.EOF) {
 				state.cr_len = 1;
-				
-			}else if (crFirst == '\n' && c == '\r') {
+
+			} else if (crFirst == '\n' && c == '\r') {
 				state.cr_len = 2;
-				
+
 			} else if (crFirst == '\r' && c == '\n') {
 				state.cr_len = 2;
-			
+
 			} else {
 				state.cr_len = 1;
-				
+
 			}
 			return this.getCharToken(state.cr_len, CR_TT);
 		}
-		
-		
+
 	}
+
 	private void consumeMoreCR(int crFirst) {
 
 		if (state.cr_len == 1) {
@@ -531,7 +530,7 @@ public class BeetlLexer {
 	}
 
 	public static void main(String[] args) {
-		String template = "<%\nvar a=1;%>\n${1}";
+		String template = "ab${";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 

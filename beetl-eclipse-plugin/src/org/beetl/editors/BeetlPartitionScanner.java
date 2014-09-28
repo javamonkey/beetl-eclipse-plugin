@@ -36,7 +36,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	@Override
 	public int getTokenOffset() {
-		return offset;
+		return partionOffset + offset;
 	}
 
 	@Override
@@ -53,24 +53,24 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
 				offset = token.start;
 				while ((token = lexer.nextToken()) != null) {
-					length = token.end - lastToken.end;				
+					length = token.end - lastToken.end;
 					if (token.getType() == BeetlLexer.ST_SE_TT) {
 						break;
 					}
 				}
-					
+
 				this.lastToken = token;
 				debug(statementToken);
 				return statementToken;
 			} else if (token.getType() == BeetlLexer.PH_SS_TT) {
 				offset = token.start;
 				while ((token = lexer.nextToken()) != null) {
-					length = token.end - lastToken.end;	
-					if (token.getType() == BeetlLexer.PH_SE_TT) {	
-						break ;
+					length = token.end - lastToken.end;
+					if (token.getType() == BeetlLexer.PH_SE_TT) {
+						break;
 					}
 				}
-			
+
 				this.lastToken = token;
 				debug(holderToken);
 				return this.holderToken;
@@ -83,8 +83,10 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		return Token.EOF;
 
 	}
-	private void debug(Token t){
-		System.out.println("offset="+this.offset+" len="+this.length+" type="+t.getData());
+
+	private void debug(Token t) {
+		System.out.println("offset=" + (this.offset + this.partionOffset)
+				+ " len=" + this.length + " type=" + t.getData());
 	}
 
 	@Override
@@ -103,33 +105,31 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	public void setPartialRange(IDocument document, int offset, int length,
 			String contentType, int partitionOffset) {
 		this.contentType = contentType;
-		this.partionOffset = partitionOffset;
-		if (partitionOffset > -1) {
-			int delta = offset - partitionOffset;
-			if (delta > 0) {
-				setRange(document, partitionOffset, length + delta);
-				this.offset = offset;
-				return;
-			}
+		if (partitionOffset == -1)
+			partitionOffset = 0;
+		else {
+			this.partionOffset = partitionOffset;
 		}
-		setRange(document, offset, length);
+
+		setRange(document, partitionOffset, length);
 	}
-	
-	public void testInit(String str){
+
+	public void testInit(String str) {
 		this.content = str;
 		source = new Source(content);
 		lexer = new BeetlLexer(source, ld);
 		lastToken = new BeetlToken();
 	}
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		BeetlPartitionScanner s = new BeetlPartitionScanner();
 		String test = "123";
 		s.testInit(test);
 		Token token = null;
-		while((token=(Token)s.nextToken())!=Token.EOF){
-			System.out.println(s.offset+":"+s.length);
+		while ((token = (Token) s.nextToken()) != Token.EOF) {
+			System.out.println(s.offset + ":" + s.length);
 		}
-		
+
 	}
 
 }

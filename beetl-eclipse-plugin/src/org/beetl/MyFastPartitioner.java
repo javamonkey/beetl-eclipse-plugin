@@ -53,7 +53,7 @@ import org.eclipse.jface.text.rules.IToken;
  * @see IPartitionTokenScanner
  * @since 3.1
  */
-public class FastPartitioner implements IDocumentPartitioner,
+public class MyFastPartitioner implements IDocumentPartitioner,
 		IDocumentPartitionerExtension, IDocumentPartitionerExtension2,
 		IDocumentPartitionerExtension3 {
 
@@ -108,7 +108,7 @@ public class FastPartitioner implements IDocumentPartitioner,
 	 * @param legalContentTypes
 	 *            the legal content types of this partitioner
 	 */
-	public FastPartitioner(IPartitionTokenScanner scanner,
+	public MyFastPartitioner(IPartitionTokenScanner scanner,
 			String[] legalContentTypes) {
 		fScanner = scanner;
 		fLegalContentTypes = TextUtilities.copy(legalContentTypes);
@@ -327,14 +327,14 @@ public class FastPartitioner implements IDocumentPartitioner,
 							+ partition.getLength())
 						reparseStart = partitionStart;
 					--first;
-				}/* else if (reparseStart == e.getOffset()
+				} else if (reparseStart == e.getOffset()
 						&& reparseStart == partition.getOffset()
 								+ partition.getLength()) {
 					partitionStart = partition.getOffset();
 					contentType = partition.getType();
 					reparseStart = partitionStart;
 					--first;
-				} */else {
+				} else {
 					partitionStart = partition.getOffset()
 							+ partition.getLength();
 					contentType = IDocument.DEFAULT_CONTENT_TYPE;
