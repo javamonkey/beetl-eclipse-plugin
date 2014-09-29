@@ -45,15 +45,16 @@ public class BeetlTokenSource {
 		}
 	}
 
-	public BeetlToken find(int p) {
+	public Object[] find(int p) {
+		int i=0;
 		for (BeetlToken token : tokens) {
+			
 			if (p >= token.start) {
 				if (p < token.end) {
-					return token;
-				} else {
-					return null;
-				}
+					return new Object[]{token,i};
+				} 
 			}
+			i++;
 		}
 		return null;
 	}

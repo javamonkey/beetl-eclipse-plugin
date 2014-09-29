@@ -131,7 +131,7 @@ public class BeetlLexer {
 				return t;
 
 			} else if (c == 'v') {
-				if (this.forwardMatchRange('a', 'r')) {
+				if (this.forwardMatchs((int)'a', (int)'r')) {
 					return this.getCharToken(3, VAR_TT);
 
 				} else {
@@ -445,13 +445,15 @@ public class BeetlLexer {
 		return c == m;
 	}
 
-	private boolean forwardMatch(int[] cs) {
+	private boolean forwardMatchs(int one,int two) {
 		int c = source.get(1);
-		for (int i : cs) {
-			if (c == i) {
+		if(c!=Source.EOF&&c==one){
+			c = source.get(2);
+			if(c!=Source.EOF&&c==two){
 				return true;
 			}
 		}
+		
 		return false;
 	}
 

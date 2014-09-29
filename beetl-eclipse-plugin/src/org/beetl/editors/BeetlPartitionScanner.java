@@ -52,6 +52,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				return textToken;
 			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
 				offset = token.start;
+				length = this.ld.strSs.length();
 				while ((token = lexer.nextToken()) != null) {
 					length = token.end - lastToken.end;
 					if (token.getType() == BeetlLexer.ST_SE_TT) {
@@ -64,13 +65,15 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				return statementToken;
 			} else if (token.getType() == BeetlLexer.PH_SS_TT) {
 				offset = token.start;
+				length = this.ld.strPs.length();
 				while ((token = lexer.nextToken()) != null) {
 					length = token.end - lastToken.end;
 					if (token.getType() == BeetlLexer.PH_SE_TT) {
 						break;
 					}
 				}
-
+				
+				
 				this.lastToken = token;
 				debug(holderToken);
 				return this.holderToken;
@@ -96,7 +99,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		source = new Source(content);
 		lexer = new BeetlLexer(source, ld);
 		lastToken = new BeetlToken();
-
+		this.length =0 ;
+		this.offset = 0;
 		System.out.println("part:" + content);
 
 	}
@@ -111,7 +115,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			this.partionOffset = partitionOffset;
 		}
 
-		setRange(document, partitionOffset, length);
+		setRange(document, partitionOffset, length+(offset-partitionOffset));
 	}
 
 	public void testInit(String str) {
@@ -123,7 +127,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	public static void main(String[] args) {
 		BeetlPartitionScanner s = new BeetlPartitionScanner();
-		String test = "123";
+		String test = "abc${";
 		s.testInit(test);
 		Token token = null;
 		while ((token = (Token) s.nextToken()) != Token.EOF) {

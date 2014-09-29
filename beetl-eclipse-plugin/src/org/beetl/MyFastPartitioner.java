@@ -355,6 +355,11 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			fScanner.setPartialRange(fDocument, reparseStart,
 					fDocument.getLength() - reparseStart, contentType,
 					partitionStart);
+//			
+//			fScanner.setPartialRange(fDocument, 0,
+//					fDocument.getLength() , contentType,
+//					0);
+			
 
 			int behindLastScannedPosition = reparseStart;
 			IToken token = fScanner.nextToken();
