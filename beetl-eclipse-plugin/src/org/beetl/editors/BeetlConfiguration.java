@@ -16,6 +16,8 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 
 	public BeetlConfiguration() {
 		super();
+			
+			
 	}
 	
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
