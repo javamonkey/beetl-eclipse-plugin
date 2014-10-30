@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- build.xml eclipse 环境自己要用,因此加了er后缀 -->
+<project default="plugin_export" name="build">
+	<target name="plugin_export">
+		<pde.exportPlugins destination="E:\" exportSource="true" exportType="directory" plugins="beetl-eclipse-plugin" useJARFormat="true"/>
+	</target>
+</project>
