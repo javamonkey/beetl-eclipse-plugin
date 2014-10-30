@@ -49,10 +49,9 @@ public class BeetlTokenSource {
 		int i=0;
 		for (BeetlToken token : tokens) {
 			
-			if (p >= token.start) {
-				if (p < token.end) {
-					return new Object[]{token,i};
-				} 
+			if (p <= token.end&&p >= token.start) {
+				
+				return new Object[]{token,i};				
 			}
 			i++;
 		}

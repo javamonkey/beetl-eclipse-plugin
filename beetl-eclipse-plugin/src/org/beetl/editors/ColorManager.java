@@ -28,4 +28,8 @@ public class ColorManager {
 		}
 		return color;
 	}
+	
+	public Color getTestColor(){
+		return getColor(SyntaxColorConstants.STRING);
+	}
 }

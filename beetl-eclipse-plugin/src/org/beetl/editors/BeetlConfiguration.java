@@ -1,14 +1,17 @@
 package org.beetl.editors;
 
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.TextAttribute;
+import org.beetl.MyIndentLineAutoEditStrategy;
+import org.eclipse.jface.text.IAutoEditStrategy;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 public class BeetlConfiguration extends SourceViewerConfiguration {
 
@@ -16,6 +19,7 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 
 	public BeetlConfiguration() {
 		super();
+		
 			
 			
 	}
@@ -28,6 +32,7 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(dr, BeetlPartitionScanner.PLACE_HOLDER_PART);
 		
 		
+		
 		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.STATIC_TEXT_PART));
 		reconciler.setDamager(dr, BeetlPartitionScanner.STATIC_TEXT_PART);
 		reconciler.setRepairer(dr, BeetlPartitionScanner.STATIC_TEXT_PART);
@@ -36,10 +41,41 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.STATEMENT_PART));
 		reconciler.setDamager(dr, BeetlPartitionScanner.STATEMENT_PART);
 		reconciler.setRepairer(dr, BeetlPartitionScanner.STATEMENT_PART);
-		
-		
+		final ISourceViewer temp =  sourceViewer;
+		sourceViewer.getSelectionProvider().addSelectionChangedListener(new TokenSelectionChangedListener ());
 		
 		return reconciler;
 	}
 
+	@Override
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer)
+	{
+
+	    ContentAssistant assistant = new ContentAssistant();
+
+	    IContentAssistProcessor tagContentAssistProcessor 
+	        = new StatementContentAssistProcessor();
+	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
+	    		BeetlPartitionScanner.STATEMENT_PART);
+	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
+	    		BeetlPartitionScanner.PLACE_HOLDER_PART);
+	    assistant.enableAutoActivation(true);
+	    assistant.setAutoActivationDelay(500);
+	    assistant.setProposalPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
+	    assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
+	    return assistant;
+
+	}
+	@Override
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer,
+            String contentType){
+		if(contentType.equals(BeetlPartitionScanner.STATEMENT_PART)||contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
+			return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy(),new AutoPairEditStrategy()};
+		}else return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy()};
+	}
+	
+	@Override
+	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer){
+		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART};
+	}
 }
