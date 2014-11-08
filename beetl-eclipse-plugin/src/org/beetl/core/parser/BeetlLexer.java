@@ -51,10 +51,12 @@ public class BeetlLexer {
 	public final static int ASSIN_TT = 22;
 	public final static int SEMI_TT = 23;
 	public final static int CR_TT = 24;
+	
+	public final static int ELSE_TT = 25;
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
-			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR" };
+			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", "else" };
 
 	LexerState state = null;
 	Source source = null;
@@ -142,6 +144,15 @@ public class BeetlLexer {
 				if (this.forwardMatch('f')) {
 
 					return this.getCharToken(2, IF_TT);
+				} else {
+
+					return idToken();
+
+				}
+			} else if (c == 'e') {
+				if (this.forwardMatchsFour((int)'l',(int)'s',(int)'e')) {
+
+					return this.getCharToken(4, ELSE_TT);
 				} else {
 
 					return idToken();
@@ -451,6 +462,20 @@ public class BeetlLexer {
 			c = source.get(2);
 			if(c!=Source.EOF&&c==two){
 				return true;
+			}
+		}
+		
+		return false;
+	}
+	private boolean forwardMatchsFour(int one,int two,int three) {
+		int c = source.get(1);
+		if(c!=Source.EOF&&c==one){
+			c = source.get(2);
+			if(c!=Source.EOF&&c==two){
+				c = source.get(3);
+				if(c!=Source.EOF&&c==three){
+					return true;
+				}
 			}
 		}
 		
