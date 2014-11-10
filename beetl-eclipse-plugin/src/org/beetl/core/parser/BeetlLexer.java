@@ -53,10 +53,16 @@ public class BeetlLexer {
 	public final static int CR_TT = 24;
 	
 	public final static int ELSE_TT = 25;
+	public final static int FOR_TT = 26;
+	public final static int IN_TT = 27;
+	
+	public final static int CONTINUE_TT = 28;
+	public final static int BREAK_TT = 29;
+	public final static int RETURN_TT = 30;
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
-			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", "else" };
+			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", "else", "for" , "in", "continue", "break" , "return" };
 
 	LexerState state = null;
 	Source source = null;
@@ -144,7 +150,9 @@ public class BeetlLexer {
 				if (this.forwardMatch('f')) {
 
 					return this.getCharToken(2, IF_TT);
-				} else {
+				}else if (this.forwardMatchs((int)'n', (int)' ')) {//${userLP.index}  不加空格index的in也变色了
+					return this.getCharToken(3, IN_TT);
+				}else {
 
 					return idToken();
 
@@ -158,7 +166,43 @@ public class BeetlLexer {
 					return idToken();
 
 				}
-			} else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+			}else if (c == 'c') {
+				if (this.forwardMatchsMore((int)'o',(int)'n',(int)'t',(int)'i',(int)'n',(int)'u',(int)'e')) {
+
+					return this.getCharToken(8,CONTINUE_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 'b') {
+				if (this.forwardMatchsMore((int)'r',(int)'e',(int)'a',(int)'k')) {
+
+					return this.getCharToken(5,BREAK_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 'r') {
+				if (this.forwardMatchsMore((int)'e',(int)'t',(int)'u',(int)'r',(int)'n')) {
+
+					return this.getCharToken(6,RETURN_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 'f') {
+				if (this.forwardMatchs((int)'o',(int)'r')) {
+
+					return this.getCharToken(3, FOR_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
 
 				return idToken();
 
@@ -467,6 +511,26 @@ public class BeetlLexer {
 		
 		return false;
 	}
+	
+	/**
+	 * 匹配多个字符
+	 * @param arr
+	 * @return
+	 */
+	private boolean forwardMatchsMore(int... arr) {
+		int c = 0;
+		for(int i=0; i < arr.length;i++){
+			c = source.get(i+1);
+			if(c!=Source.EOF&&c==arr[i]&& i==(arr.length-1)){
+				return true;
+			}else{
+				continue;
+			}
+			
+		}
+		return false;
+	}
+	
 	private boolean forwardMatchsFour(int one,int two,int three) {
 		int c = source.get(1);
 		if(c!=Source.EOF&&c==one){

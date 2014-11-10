@@ -72,7 +72,7 @@ public class BeetlTokenScanner implements ITokenScanner {
 
 		} else if (t.type == BeetlLexer.VAR_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
-					.getColor(SyntaxColorConstants.STRING)));
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
 		}else if (t.type == BeetlLexer.IF_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
@@ -82,7 +82,27 @@ public class BeetlTokenScanner implements ITokenScanner {
 			return new Token(new TextAttribute(ColorManager.instance()
 					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
-		} 
+		} else if (t.type == BeetlLexer.FOR_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.IN_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.CONTINUE_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.BREAK_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.RETURN_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}
 		else if (t.type == BeetlLexer.ST_SS_TT
 				|| t.type == BeetlLexer.ST_SE_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
