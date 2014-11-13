@@ -59,11 +59,49 @@ public class BeetlLexer {
 	public final static int CONTINUE_TT = 28;
 	public final static int BREAK_TT = 29;
 	public final static int RETURN_TT = 30;
+	
+	public final static int ELSEFOR_TT = 31;
+	public final static int WHILE_TT = 32;
+	public final static int SWITCH_TT = 33;
+	public final static int SELECT_TT = 34;
+	public final static int DIRECTIVE_L_TT = 35;
+	public final static int DIRECTIVE_G_TT = 36;
+	public final static int CASE_TT = 37;
+	public final static int DEFAULT_TT = 38;
+	public final static int TRY_TT = 39;
+	public final static int CATCH_TT = 40;
+	public final static int LEFT_SQBR_TT = 41;
+	public final static int RIGHT_SQBR_TT = 42;
+	public final static int VIRTUAL_TT = 43;
+	public final static int MUlTIP_TT = 44;
+	public final static int DIV_TT = 45;
+	public final static int MOD_TT = 46;
+	public final static int NOT_EQUAL_TT = 47;
+	public final static int LARGE_EQUAL_TT = 48;
+	public final static int LARGE_TT = 49;
+	public final static int LESS_EQUAL_TT = 50;
+	public final static int LESS_TT = 51;
+	public final static int NOT_TT = 52;
+	public final static int AND_TT = 53;
+	public final static int OR_TT = 54;
+	public final static int QUESTOIN_TT = 55;
+	public final static int AT_TT = 56;
+	public final static int NULL_TT = 57;
+	public final static int TRUE_TT = 58;
+	public final static int FALSE_TT = 59;
+	public final static int COMMA_TT = 60;
+	public final static int COLON_TT = 61;
+	public final static int LEFT_TOKEN_TT = 62;
+	public final static int RIGHT_TOKEN_TT = 63;
+	public final static int LEFT_TEXT_TOKEN_TT = 64;
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
-			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", "else", "for" , "in", "continue", "break" , "return" };
-
+			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", 
+			"else", "for" , "in", "continue", "break" , "return" ,
+			"elsefor","while","switch","select","directive","DIRECTIVE","case","default","try","catch",
+			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$"};
+	
 	LexerState state = null;
 	Source source = null;
 	LexerDelimiter ld;
@@ -161,6 +199,37 @@ public class BeetlLexer {
 				if (this.forwardMatchsFour((int)'l',(int)'s',(int)'e')) {
 
 					return this.getCharToken(4, ELSE_TT);
+				} else if (this.forwardMatchsFour((int)'f',(int)'o',(int)'r')) {
+					return this.getCharToken(7, ELSEFOR_TT);
+				}else {
+
+					return idToken();
+
+				}
+			}else if (c == 'r') {
+				if (this.forwardMatchsMore((int)'e',(int)'t',(int)'u',(int)'r',(int)'n',(int)';')) {
+
+					return this.getCharToken(7, RETURN_TT);
+				}else {
+
+					return idToken();
+
+				}
+			}else if (c == 'w') {
+				if (this.forwardMatchsMore((int)'h',(int)'i',(int)'l',(int)'e')) {
+
+					return this.getCharToken(5, WHILE_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 's') {
+				if (this.forwardMatchsMore((int)'w',(int)'i',(int)'t',(int)'c',(int)'h')) {
+
+					return this.getCharToken(6, SWITCH_TT);
+				}else if (this.forwardMatchsMore((int)'e',(int)'l',(int)'e',(int)'c',(int)'t')) {
+					return this.getCharToken(6, SELECT_TT);
 				} else {
 
 					return idToken();
@@ -170,6 +239,12 @@ public class BeetlLexer {
 				if (this.forwardMatchsMore((int)'o',(int)'n',(int)'t',(int)'i',(int)'n',(int)'u',(int)'e')) {
 
 					return this.getCharToken(8,CONTINUE_TT);
+				}else if(this.forwardMatchsMore((int)'a',(int)'t',(int)'c',(int)'h')){
+					
+					return this.getCharToken(5,CATCH_TT);
+				}else if(this.forwardMatchsMore((int)'a',(int)'s',(int)'e')){
+					
+					return this.getCharToken(4,CASE_TT);
 				} else {
 
 					return idToken();
@@ -184,10 +259,43 @@ public class BeetlLexer {
 					return idToken();
 
 				}
-			}else if (c == 'r') {
-				if (this.forwardMatchsMore((int)'e',(int)'t',(int)'u',(int)'r',(int)'n')) {
+			}else if (c == 'd') {
+				if (this.forwardMatchsMore((int)'e',(int)'f',(int)'a',(int)'u',(int)'l',(int)'t')) {
 
-					return this.getCharToken(6,RETURN_TT);
+					return this.getCharToken(7,DEFAULT_TT);
+				}else if (this.forwardMatchsMore((int)'i',(int)'r',(int)'e',(int)'c',(int)'t',(int)'i',(int)'v',(int)'e')) {
+					
+					return this.getCharToken(9,DIRECTIVE_L_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 'D') {
+				if (this.forwardMatchsMore((int)'I',(int)'R',(int)'E',(int)'C',(int)'T',(int)'I',(int)'V',(int)'E')) {
+					
+					return this.getCharToken(9,DIRECTIVE_G_TT);
+				}else {
+
+					return idToken();
+
+				}
+			}else if (c == 't') {
+				if (this.forwardMatchsMore((int)'r',(int)'u',(int)'e')) {
+
+					return this.getCharToken(4,TRUE_TT);
+				}else if (this.forwardMatchsMore((int)'r',(int)'y')) {
+
+					return this.getCharToken(3,TRY_TT);
+				} else {
+
+					return idToken();
+
+				}
+			}else if (c == 'n') {
+				if (this.forwardMatchsMore((int)'u',(int)'l',(int)'l')) {
+
+					return this.getCharToken(4,NULL_TT);
 				} else {
 
 					return idToken();
@@ -197,6 +305,9 @@ public class BeetlLexer {
 				if (this.forwardMatchs((int)'o',(int)'r')) {
 
 					return this.getCharToken(3, FOR_TT);
+				}if (this.forwardMatchsMore((int)'a',(int)'l',(int)'s',(int)'e')) {
+
+					return this.getCharToken(5, FALSE_TT);
 				} else {
 
 					return idToken();
@@ -207,13 +318,17 @@ public class BeetlLexer {
 				return idToken();
 
 			} else if (c == '{') {
-				return this.getCharToken(1, this.LEFT_BRACE_TT);
+				return this.getCharToken(1, LEFT_BRACE_TT);
 			} else if (c == '}') {
-				return this.getCharToken(1, this.RIGHT_BRACE_TT);
+				return this.getCharToken(1, RIGHT_BRACE_TT);
 			} else if (c == '(') {
-				return this.getCharToken(1, this.LEFT_PAR_TT);
+				return this.getCharToken(1, LEFT_PAR_TT);
 			} else if (c == ')') {
 				return this.getCharToken(1, RIGHT_PAR_TT);
+			}else if (c == '[') {
+				return this.getCharToken(1, LEFT_SQBR_TT);
+			} else if (c == ']') {
+				return this.getCharToken(1, RIGHT_SQBR_TT);
 			} else if (c == ' ') {
 				return this.consumeWS();
 			} else if (c == '\r' || c == '\n') {
@@ -221,7 +336,20 @@ public class BeetlLexer {
 			} else if (c == ';') {
 				return this.getCharToken(1, SEMI_TT);
 
-			} else if (c == '=') {
+			} else if (c == '?') {
+				return this.getCharToken(1, QUESTOIN_TT);
+
+			}else if (c == '@') {
+				return this.getCharToken(1, AT_TT);
+
+			}else if (c == ',') {
+				return this.getCharToken(1, COMMA_TT);
+
+			}else if (c == ':') {
+				return this.getCharToken(1, COLON_TT);
+
+			}
+			else if (c == '=') {
 				if (this.forwardMatch('=')) {
 					return this.getCharToken(2, this.EQUALS_TT);
 				} else {
@@ -242,7 +370,10 @@ public class BeetlLexer {
 
 					return numberToken();
 
-				} else {
+				} else if (this.forwardMatch((int)'~')) {
+					return this.getCharToken(2, VIRTUAL_TT);
+
+				}else {
 					return this.getCharToken(1, this.PERIOD_TT);
 
 				}
@@ -255,17 +386,68 @@ public class BeetlLexer {
 
 				}
 
-			} else if (c == '(') {
-				return this.getCharToken(1, this.LEFT_PAR_TT);
+			} else if (c == '!') {
+				if (this.forwardMatch('=')) {
+					return this.getCharToken(2, NOT_EQUAL_TT);
 
-			} else if (c == ')') {
-				return this.getCharToken(1, this.RIGHT_PAR_TT);
+				} else {
+					return this.getCharToken(1, NOT_TT);
+
+				}
+
+			} else if (c == '>') {
+				if (this.forwardMatch('=')) {
+					return this.getCharToken(2, LARGE_EQUAL_TT);
+
+				}else if (this.forwardMatch('>')) {
+					return this.getCharToken(2, RIGHT_TOKEN_TT);
+
+				} else {
+					return this.getCharToken(1, LARGE_TT);
+
+				}
+
+			} else if (c == '<') {
+				if (this.forwardMatch('=')) {
+					return this.getCharToken(2, LESS_EQUAL_TT);
+
+				}else if (this.forwardMatch('<')) {
+					return this.getCharToken(2, LEFT_TOKEN_TT);
+
+				}else if (this.forwardMatch('$')) {
+					return this.getCharToken(2, LEFT_TEXT_TOKEN_TT);
+
+				} else {
+					return this.getCharToken(1, LESS_TT);
+
+				}
+
+			} else if (c == '*') {
+				return this.getCharToken(1, MUlTIP_TT);
+
+			} else if (c == '/') {
+				return this.getCharToken(1, DIV_TT);
+
+			} else if (c == '%') {
+				return this.getCharToken(1, MOD_TT);
 
 			} else if (c == '=') {
 				if (this.forwardMatch('=')) {
 					return this.getCharToken(2, this.ASSIN_TT);
 				} else {
 					return this.getCharToken(1, this.EQUALS_TT);
+				}
+			}else if (c == '&') {
+				if (this.forwardMatch('&')) {
+					return this.getCharToken(2, AND_TT);
+				} else {
+					return idToken();
+				}
+			}else if (c == '|') {
+				if (this.forwardMatch('|')) {
+					return this.getCharToken(2, OR_TT);
+				} else {
+					return idToken();
 				}
 			} else {
 				return this.getSingleErrorToken("Error:" + c);
@@ -621,6 +803,7 @@ public class BeetlLexer {
 	}
 
 	public static void main(String[] args) {
+		System.err.println(tokens.length);
 		String template = "ab${";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
