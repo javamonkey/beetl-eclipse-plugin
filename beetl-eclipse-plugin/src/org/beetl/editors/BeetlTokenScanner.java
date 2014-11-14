@@ -98,11 +98,23 @@ public class BeetlTokenScanner implements ITokenScanner {
 			return new Token(new TextAttribute(ColorManager.instance()
 					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
-		}else if (t.type == BeetlLexer.RETURN_TT) {
+		}else if (t.type == BeetlLexer.RETURN_TT || t.type == BeetlLexer.WHILE_TT || t.type == BeetlLexer.SWITCH_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.SELECT_TT || t.type == BeetlLexer.DIRECTIVE_G_TT || t.type == BeetlLexer.DIRECTIVE_L_TT) {
+			return new Token(new TextAttribute(ColorManager.instance()
+					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
+
+		}else if (t.type == BeetlLexer.CASE_TT || t.type == BeetlLexer.DEFAULT_TT || t.type == BeetlLexer.TRY_TT || t.type == BeetlLexer.CATCH_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
 					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
 		}
+		
+		
+		
+		//TODO 9
 		else if (t.type == BeetlLexer.ST_SS_TT
 				|| t.type == BeetlLexer.ST_SE_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
