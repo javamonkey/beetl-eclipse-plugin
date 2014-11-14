@@ -94,7 +94,7 @@ public class BeetlTokenScanner implements ITokenScanner {
 			return new Token(new TextAttribute(ColorManager.instance()
 					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
-		}else if (t.type == BeetlLexer.BREAK_TT) {
+		}else if (t.type == BeetlLexer.BREAK_TT || t.type == BeetlLexer.NULL_TT || t.type == BeetlLexer.FALSE_TT || t.type == BeetlLexer.TRUE_TT) {
 			return new Token(new TextAttribute(ColorManager.instance()
 					.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
