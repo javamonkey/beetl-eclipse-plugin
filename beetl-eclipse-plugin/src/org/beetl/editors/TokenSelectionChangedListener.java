@@ -86,7 +86,7 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 	
 	private List<BeetlToken> findSameTokens(int index,BeetlTokenSource source,BeetlToken t ){
 		 List<BeetlToken> list = new ArrayList<BeetlToken> ();
-		for(int i=index+1;i<source.tokens.size();i++){
+		for(int i=1;i<source.tokens.size();i++){
 			BeetlToken token = source.tokens.get(i);
 			if(token.getType()==t.getType()&&token.getText().equals(t.getText())){
 				list.add(token);
