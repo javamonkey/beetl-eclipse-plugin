@@ -505,6 +505,8 @@ public class BeetlLexer {
 				return null;
 			}
 		}
+		
+		
 
 		return getStaticTextToken(start, source.pos(), col, line);
 
