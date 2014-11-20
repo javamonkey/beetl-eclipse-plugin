@@ -3,9 +3,17 @@ package org.beetl.core.parser;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HtmlLexer {
-	String text ;
-	int lastType;
+public class HtmlLexer extends BasicLexer {
+	//输入源
+	Source source = null;
+	//解析中的状态
+	LexerState state = null;
+	/**
+	 * 上一次解析状态，有可能延续到本次，如<html name="${a}" >上一次是属性value
+	 * 因此本次也是属性value
+	 */
+	
+	int lastHtmlType;
 	int status = 0;
 	List<BeetlToken> list = new LinkedList<BeetlToken>();
 	
@@ -27,17 +35,21 @@ public class HtmlLexer {
 	
 	
 	
-	public HtmlLexer(String str,int lastType){
-		this.text = str;
-		this.lastType = lastType;
+	public HtmlLexer(String str,int lastLine,int lastCol,int lastHtmlType){
+		source = new Source(str);
+		state = new LexerState();
+		state.col = lastCol;
+		state.line = lastLine;		
+		source.setState(state);
+		this.lastHtmlType = lastHtmlType;
 		
 	}
 	
 	public void parse(){
-		if(lastType==0){
+		if(lastHtmlType==0){
 			status = S_TAG_START;
 		}else{
-			status = lastType ;
+			status = lastHtmlType ;
 		}
 		
 		while(true){
@@ -58,8 +70,8 @@ public class HtmlLexer {
 	}
 	
 	public void nextTagToken(){
-		int c = 0;
 		
+		this.consumeWS();
 		while(i<text.length()){
 			c = text.charAt(i);
 			i++;
