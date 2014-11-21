@@ -27,7 +27,7 @@ public class ColorToken {
 	public static Token getColorTokenByType(int type){
 		
 		switch(type){
-			case BeetlLexer.TEXT_TT:
+			case BeetlLexer.TEXT_TT: return defaultToken;
 			case BeetlLexer.VAR_TT:
 			case BeetlLexer.IF_TT:
 			case BeetlLexer.ELSE_TT:

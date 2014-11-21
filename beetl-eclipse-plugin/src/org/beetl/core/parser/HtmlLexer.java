@@ -19,30 +19,36 @@ public class HtmlLexer extends BasicLexer {
 	
 	int i = 0;
 	
+	int pos = 0;
+	
+	/*解析中的状态*/
+	public final static int S_TEXT = 0;
 	public final static int S_TAG_START = 1;
 	public final static int S_TAG_ATTR = 2;	
-	public final static int S_TAG_END = 2;
-	
-	
-	public final static int TAG_START = 1000;
-	public final static int TAG_END = 1001;
-	public final static int TAG_ATTR_NAME = 1002;
-	public final static int TAG_ATTR_VALUE = 1003;
-	public final static int TAG_TEXT = 1004;
-	public final static int ERROR = 1005;
+	public final static int S_TAG_END = 3;
 	
 	
 	
+	/*html 标签 type*/
+	public final static int HTML_TAG_START = 1000;
+	public final static int HTML_TAG_END = 1001;
+	public final static int HTML_TAG_ATTR_NAME = 1002;
+	public final static int HTML_TAG_ATTR_VALUE = 1003;
+	public final static int HTML_TAG_TEXT = 1004;
+	public final static int HTML_TAG_ERROR = 1005;
 	
 	
-	public HtmlLexer(String str,int lastLine,int lastCol,int lastHtmlType){
+	
+	
+	
+	public HtmlLexer(String str,int pos,int lastLine,int lastCol,int lastHtmlType){
 		source = new Source(str);
 		state = new LexerState();
 		state.col = lastCol;
 		state.line = lastLine;		
 		source.setState(state);
 		this.lastHtmlType = lastHtmlType;
-		
+		this.pos = pos;
 	}
 	
 	public void parse(){
@@ -67,6 +73,36 @@ public class HtmlLexer extends BasicLexer {
 			}
 			}
 		}
+	}
+	
+	public void nextTextToken(){
+		int c ;
+		int start = source.pos();
+		while((c=source.get())!=source.EOF){
+			if(c=='<'){
+				this.status = S_TAG_START;
+				break ;
+			}else{
+				source.consume();
+			}
+		}
+		
+		int end = source.pos();
+		
+		
+		
+	}
+	
+	public BeetlToken createToken(int start,int end,int type){
+		BeetlToken t = new BeetlToken();
+		t.type = type;
+		t.text = source.getRange(start, end);
+		t.col = state.col;
+		t.line = state.line;
+		t.channel = 2;
+		t.start = start+this.pos;
+		t.end = end+this.pos;
+		return t;
 	}
 	
 	public void nextTagToken(){
