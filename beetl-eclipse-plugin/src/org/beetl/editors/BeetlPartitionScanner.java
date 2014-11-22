@@ -88,8 +88,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	}
 
 	private void debug(Token t) {
-		System.out.println("offset=" + (this.offset + this.partionOffset)
-				+ " len=" + this.length + " type=" + t.getData());
+//		System.out.println("offset=" + (this.offset + this.partionOffset)
+//				+ " len=" + this.length + " type=" + t.getData());
 	}
 
 	@Override
