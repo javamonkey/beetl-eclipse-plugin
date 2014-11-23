@@ -674,62 +674,7 @@ public class BeetlLexer extends BasicLexer {
 		return token;
 	}
 
-	private boolean forwardMatchRange(int start, int end) {
-		int c = source.get(1);
-		return c >= start && c <= end;
-	}
-
-	private boolean forwardMatch(int m) {
-		int c = source.get(1);
-		return c == m;
-	}
-
-	private boolean forwardMatchs(int one,int two) {
-		int c = source.get(1);
-		if(c!=Source.EOF&&c==one){
-			c = source.get(2);
-			if(c!=Source.EOF&&c==two){
-				return true;
-			}
-		}
-		
-		return false;
-	}
 	
-	/**
-	 * 匹配多个字符
-	 * @param arr
-	 * @return
-	 */
-	private boolean forwardMatchsMore(int... arr) {
-		int c = 0;
-		for(int i=0; i < arr.length;i++){
-			c = source.get(i+1);
-			if(c!=Source.EOF&&c==arr[i]&& i==(arr.length-1)){
-				return true;
-			}else{
-				continue;
-			}
-			
-		}
-		return false;
-	}
-	
-	private boolean forwardMatchsFour(int one,int two,int three) {
-		int c = source.get(1);
-		if(c!=Source.EOF&&c==one){
-			c = source.get(2);
-			if(c!=Source.EOF&&c==two){
-				c = source.get(3);
-				if(c!=Source.EOF&&c==three){
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
 	private BeetlToken getCRToken(int crFirst) {
 		if (state.cr_len != 0) {
 			return this.getCharToken(state.cr_len, CR_TT);

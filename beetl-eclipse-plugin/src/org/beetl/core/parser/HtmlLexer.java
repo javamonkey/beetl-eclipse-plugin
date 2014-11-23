@@ -35,7 +35,7 @@ public class HtmlLexer extends BasicLexer {
 	public final static int HTML_TAG_ATTR_NAME = 1002;
 	public final static int HTML_TAG_ATTR_VALUE = 1003;
 	public final static int HTML_TAG_TEXT = 1004;
-	public final static int HTML_TAG_ERROR = 1005;
+	public final static int HTML_TAG_UNKONW = 1005;
 	
 	
 	
@@ -61,13 +61,12 @@ public class HtmlLexer extends BasicLexer {
 		while(true){
 			switch(status){
 			case S_TAG_START:{
-				nextTagToken();
-				status = S_TAG_ATTR; 
+				nextStartTagToken();				
 				continue;
 			}
 			case S_TAG_ATTR:{
 				nextAttributeToken();
-				status = S_TAG_END; 
+			
 				continue;
 				
 			}
@@ -80,7 +79,12 @@ public class HtmlLexer extends BasicLexer {
 		int start = source.pos();
 		while((c=source.get())!=source.EOF){
 			if(c=='<'){
-				this.status = S_TAG_START;
+				if(this.forwardMatch('/')){
+					this.status = S_TAG_END;
+				}else{
+					this.status = S_TAG_START;
+				}
+				
 				break ;
 			}else{
 				source.consume();
@@ -89,8 +93,152 @@ public class HtmlLexer extends BasicLexer {
 		
 		int end = source.pos();
 		
+		BeetlToken t = createToken(start,end,HTML_TAG_TEXT);
+		list.add(t);
 		
 		
+	}
+	
+	
+	
+	public void nextStartTagToken(){
+		
+		int c ;
+		int start = source.pos();
+		while((c=source.get())!=source.EOF){
+			if(c==' '||c=='\t'){				
+				this.status = S_TAG_ATTR;
+				break ;
+			}else if(c=='>'){
+				this.status = S_TEXT;
+				source.consume();
+				break;
+			}else if(c=='/'&&this.forwardMatch('>')){
+				this.status = S_TEXT;
+				source.consume(2);
+				break;
+			}
+			else {
+				source.consume();
+			}
+		}
+		
+		int end = source.pos();
+		BeetlToken t = createToken(start, end, HTML_TAG_START);
+		list.add(t);
+		return ;
+		
+	}
+	
+public void nextEndTagToken(){
+		
+		int c ;
+		int start = 0;
+		while((c=source.get())!=source.EOF){
+			if(c==' '||c=='\t'){				
+				this.status = S_TAG_ATTR;
+				break ;
+			}else if(c=='>'){
+				this.status = S_TEXT;
+				source.consume();
+				break;
+			}else if(c=='/'&&this.forwardMatch('>')){
+				this.status = S_TEXT;
+				source.consume(2);
+				break;
+			}
+			else {
+				source.consume();
+			}
+		}
+		
+		int end = source.pos();
+		BeetlToken t = createToken(start, end, HTML_TAG_START);
+		list.add(t);
+		return ;
+		
+	}
+	
+	
+	
+	public void nextAttributeToken(){
+		this.consumeWS();
+		int c ;
+		int start = 0;
+		while((c=source.get())!=source.EOF){
+			if(c==' '||c=='\t'){				
+				this.status = S_TAG_ATTR;
+				break ;
+			}else if(c=='>'){
+				this.status = S_TEXT;
+				source.consume();
+				break;
+			}else if(c=='/'&&this.forwardMatch('>')){
+				this.status = S_TEXT;
+				source.consume(2);
+				break;
+			}
+			else {
+				source.consume();
+			}
+		}
+		
+		int end = source.pos();
+		BeetlToken t = createToken(start, end, HTML_TAG_START);
+		list.add(t);
+		return ;
+	}
+	
+	public BeetlToken idToken(){
+		int c ;		
+		int start = source.pos();
+		while((c=source.get())!=source.EOF){
+			if(c==' '||c=='\t'){
+				break ;
+			}else if((c>'a'&&c<='z')||c>='A'||c<='Z'){
+				source.consume();
+				continue;
+				
+			}else if(c>='0'&&c<='9'){
+				source.consume();
+				continue;
+			}else if(c=='_'||c=='$'){
+				source.consume();
+				continue;
+			}
+			else {
+				break;
+			}
+		}
+		
+		int end = source.pos();
+		BeetlToken t = createToken(start, end, HTML_TAG_UNKONW);	
+		return t;
+		
+	}
+	
+	private BeetlToken stringToken() {
+		//第一个引号
+		int c = source.get();
+		source.consume();
+		int find = c;
+		
+		while ((c = source.get()) != source.EOF) {
+			if (c == find) {
+				source.consume();
+				if (!source.hasEscape()) {
+					// 结束
+					createToken
+					
+				}
+			}  else {
+				source.consume();
+			}
+		}
+
+		BeetlToken error = this.getErrorToken(t.start, source.pos());
+		return error;
+
 	}
 	
 	public BeetlToken createToken(int start,int end,int type){
@@ -104,47 +252,5 @@ public class HtmlLexer extends BasicLexer {
 		t.end = end+this.pos;
 		return t;
 	}
-	
-	public void nextTagToken(){
-		
-		this.consumeWS();
-		while(i<text.length()){
-			c = text.charAt(i);
-			i++;
-			if(c==' '|| c=='\t' || c=='\r'||c=='\n'){
-				continue;
-			}else if(c=='<'){
-				String tagName = getTagName();
-				BeetlToken token = new BeetlToken();
-				
-			}
-		}
-	}
-	
-	
-	
-	public void nextAttributeToken(){
-		
-	}
-	
-	private String getTagName(){
-		int pos = i;
-		int c = 0;
-		while(pos<text.length()){
-			 c = text.charAt(pos);
-			 pos++;
-			if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-				continue;
-			}else if(c==':'){
-				continue ;
-			}else{
-				//结束
-				break;
-			}
-		}
-		
-		String str =  text.substring(i,pos);
-		i = pos;
-		return str;
-	}
+
 }

@@ -55,4 +55,60 @@ public class BasicLexer {
 		return token;
 
 	}
+	
+	protected boolean forwardMatchRange(int start, int end) {
+		int c = source.get(1);
+		return c >= start && c <= end;
+	}
+	protected boolean forwardMatch(int m) {
+		int c = source.get(1);
+		return c == m;
+	}
+
+	protected boolean forwardMatchs(int one,int two) {
+		int c = source.get(1);
+		if(c!=Source.EOF&&c==one){
+			c = source.get(2);
+			if(c!=Source.EOF&&c==two){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 匹配多个字符
+	 * @param arr
+	 * @return
+	 */
+	protected boolean forwardMatchsMore(int... arr) {
+		int c = 0;
+		for(int i=0; i < arr.length;i++){
+			c = source.get(i+1);
+			if(c!=Source.EOF&&c==arr[i]&& i==(arr.length-1)){
+				return true;
+			}else{
+				continue;
+			}
+			
+		}
+		return false;
+	}
+	
+	protected boolean forwardMatchsFour(int one,int two,int three) {
+		int c = source.get(1);
+		if(c!=Source.EOF&&c==one){
+			c = source.get(2);
+			if(c!=Source.EOF&&c==two){
+				c = source.get(3);
+				if(c!=Source.EOF&&c==three){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 }
