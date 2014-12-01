@@ -10,10 +10,10 @@ public class ColorToken {
 				.getColor(SyntaxColorConstants.STATEMENT),null,SWT.BOLD,null));
 
 	public static Token delimeter = new Token(new TextAttribute(ColorManager.instance()
-			.getColor(SyntaxColorConstants.ST)));
+			.getColor(SyntaxColorConstants.ST),null,SWT.BOLD));
 	
 	public static Token ph =  new Token(new TextAttribute(ColorManager.instance()
-			.getColor(SyntaxColorConstants.HOLDER)));
+			.getColor(SyntaxColorConstants.HOLDER),null,SWT.BOLD));
 	
 	public static Token error =  new Token(new TextAttribute(ColorManager.instance()
 			.getColor(SyntaxColorConstants.ERROR)));
@@ -28,6 +28,7 @@ public class ColorToken {
 		
 		switch(type){
 			case BeetlLexer.TEXT_TT:
+				return defaultToken;
 			case BeetlLexer.VAR_TT:
 			case BeetlLexer.IF_TT:
 			case BeetlLexer.ELSE_TT:
