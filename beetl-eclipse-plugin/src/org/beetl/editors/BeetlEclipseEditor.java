@@ -1,6 +1,7 @@
 package org.beetl.editors;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.contexts.IContextService;
@@ -20,9 +21,15 @@ public class BeetlEclipseEditor extends TextEditor {
 		setSourceViewerConfiguration(new BeetlConfiguration());
 		setDocumentProvider(new BeetlDocumentProvider());
 	
-		
+	
 		
 	}
+	
+	public ISourceViewer getSourceView(){
+		ISourceViewer viewer= getSourceViewer();
+		return viewer;
+	}
+	
 	
 	
 	@Override

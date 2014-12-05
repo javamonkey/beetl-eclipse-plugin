@@ -18,6 +18,7 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer arg0,
 			int offset) {
 		String text = arg0.getDocument().get();
+		
 		BeetlTokenSource source = new BeetlTokenSource(null);
 		source.parse(text);
 		Object[] info = source.find(offset);

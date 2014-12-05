@@ -10,12 +10,12 @@ public class BeetlDoubleClickStrategy implements ITextDoubleClickStrategy {
 
 		if (pos < 0)
 			return;
-
-		fText = part;
-
-		if (!selectComment(pos)) {
-			selectWord(pos);
-		}
+		part.getTextWidget().setSelection(5);
+//		fText = part;
+//
+//		if (!selectComment(pos)) {
+//			selectWord(pos);
+//		}
 	}
 	protected boolean selectComment(int caretPos) {
 		IDocument doc = fText.getDocument();

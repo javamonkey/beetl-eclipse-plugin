@@ -1,5 +1,6 @@
 package beetleclipseplugin.handlers;
 
+import org.beetl.editors.Project;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -24,11 +25,14 @@ public class SampleHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		MessageDialog.openInformation(
-				window.getShell(),
-				"Beetl-eclipse-plugin",
-				"Hello, Eclipse world");
+//		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+//		MessageDialog.openInformation(
+//				window.getShell(),
+//				"Beetl-eclipse-plugin",
+//				"Hello, Eclipse world");
+		
+		Project.open();
+		System.out.println("okok");
 		return null;
 	}
 }

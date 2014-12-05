@@ -36,7 +36,7 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="beetl-eclipse-plugin.commands.sampleCommand"
-            contextId="beetl-eclipse-plugin.beetlcontext"
+           contextId="org.eclipse.ui.textEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+6">
       </key>
