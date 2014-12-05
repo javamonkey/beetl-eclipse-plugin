@@ -1,6 +1,6 @@
-package beetleclipseplugin.handlers;
+package org.beetl.editor.handler;
 
-import org.beetl.editors.Project;
+import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -13,11 +13,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
  * @see org.eclipse.core.commands.IHandler
  * @see org.eclipse.core.commands.AbstractHandler
  */
-public class SampleHandler extends AbstractHandler {
+public class EditorToggleHandler extends AbstractHandler {
 	/**
 	 * The constructor.
 	 */
-	public SampleHandler() {
+	public EditorToggleHandler() {
 	}
 
 	/**
@@ -25,14 +25,10 @@ public class SampleHandler extends AbstractHandler {
 	 * from the application context.
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-//		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-//		MessageDialog.openInformation(
-//				window.getShell(),
-//				"Beetl-eclipse-plugin",
-//				"Hello, Eclipse world");
+
 		
-		Project.open();
-		System.out.println("okok");
+		ProjectUtil.toggleEditor(event);
+		
 		return null;
 	}
 }

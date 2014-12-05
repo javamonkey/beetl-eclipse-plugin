@@ -13,7 +13,7 @@ public class BeetlEclipseEditor extends TextEditor {
 	public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
 	public final static String EDITOR_MATCHING_BRACKETS_COLOR= "matchingBracketsColor";
 
-	
+	private String oldEditorId = null;
 	
 	public BeetlEclipseEditor() {
 		super();
@@ -58,6 +58,14 @@ public class BeetlEclipseEditor extends TextEditor {
 	public void dispose() {
 		
 		super.dispose();
+	}
+
+	public String getOldEditorId() {
+		return oldEditorId;
+	}
+
+	public void setOldEditorId(String oldEditorId) {
+		this.oldEditorId = oldEditorId;
 	}
 
 }

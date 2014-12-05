@@ -21,24 +21,47 @@
       </category>
       <command
             categoryId="beetl-eclipse-plugin.commands.category"
-            id="beetl-eclipse-plugin.commands.sampleCommand"
+            id="beetl-eclipse-plugin.command.editorToggleCommand"
             name="Sample Command">
+      </command>
+      <command
+      		categoryId="beetl-eclipse-plugin.commands.category"
+      		name = "nextStatCommand"
+            id="beetl-eclipse-plugin.command.nextStatCommand">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="beetleclipseplugin.handlers.SampleHandler"
-            commandId="beetl-eclipse-plugin.commands.sampleCommand">
+            class="org.beetl.editor.handler.EditorToggleHandler"
+            commandId="beetl-eclipse-plugin.command.editorToggleCommand">
       </handler>
    </extension>
+     <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.beetl.editor.handler.NextStatHandler"
+            commandId="beetl-eclipse-plugin.command.nextStatCommand">
+      </handler>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="beetl-eclipse-plugin.commands.sampleCommand"
+            commandId="beetl-eclipse-plugin.command.editorToggleCommand"
            contextId="org.eclipse.ui.textEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+6">
+      </key>
+   </extension>
+   
+    <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="beetl-eclipse-plugin.command.nextStatCommand"
+            contextId="beetl-eclipse-plugin.beetlcontext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+2">
       </key>
    </extension>
    <extension
