@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -22,6 +23,11 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 		TextSelection selction = (TextSelection)event.getSelection() ;
 		
 		System.out.println(selction.getText());
+		
+		if (BeetlLexer.contains(selction.getText())) {
+			return;
+		}
+		System.out.println("不包含..");
 		
 		int offset = selction.getOffset();
 		int len = selction.getLength();
