@@ -1,5 +1,9 @@
 package org.beetl.core.parser;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 /**
  * 生成token流
  * 
@@ -101,6 +105,28 @@ public class BeetlLexer {
 			"else", "for" , "in", "continue", "break" , "return" ,
 			"elsefor","while","switch","select","directive","DIRECTIVE","case","default","try","catch",
 			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$"};
+	
+	public static Set<String> tokenSet = new HashSet<String>(tokens.length);
+	
+	static{
+		for (String string : tokens) {
+			if (Pattern.matches("\\w", string)) {
+				tokenSet.add(string);
+			}
+		}
+	}
+	
+	/**
+	 * issues6
+	 * @param text
+	 * @return
+	 */
+	public static boolean contains(String text){
+		if("".equals(text.trim())){
+			return true;
+		}
+		return tokenSet.contains(text);
+	}
 	
 	LexerState state = null;
 	Source source = null;
