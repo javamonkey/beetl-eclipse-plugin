@@ -28,6 +28,21 @@ public class NextStatHandler extends AbstractHandler {
 
 		
 		System.out.println("okok");
+		 /*
+		 if(part instanceof BeetlEclipseEditor){
+			 BeetlEclipseEditor editor = (BeetlEclipseEditor)part;
+			 ISourceViewer view = editor.getSourceView();
+			// caretOffset = view.getTextWidget().getCaretOffset();
+//			 view.getTextWidget().setSelection(10);
+//			 //view.setSelectedRange(10, 2);
+//			 //FileEditorInput input = (FileEditorInput)editor.getEditorInput();
+////			 input.getAdapter(adapter)
+			
+			 
+		 }else if(part instanceof AbstractTextEditor){
+			 
+		 }
+		 */
 		
 		return null;
 	}
