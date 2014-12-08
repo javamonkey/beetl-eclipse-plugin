@@ -110,9 +110,7 @@ public class BeetlLexer {
 	
 	static{
 		for (String string : tokens) {
-			if (Pattern.matches("\\w", string)) {
-				tokenSet.add(string);
-			}
+			tokenSet.add(string);
 		}
 	}
 	
