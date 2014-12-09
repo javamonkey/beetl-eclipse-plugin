@@ -1,11 +1,16 @@
 package org.beetl.editors;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class BeetlEclipseEditor extends TextEditor {
@@ -66,6 +71,12 @@ public class BeetlEclipseEditor extends TextEditor {
 
 	public void setOldEditorId(String oldEditorId) {
 		this.oldEditorId = oldEditorId;
+	}
+	
+	
+	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
+		//总是覆盖，否则，不能保存beetl editor
+		super.performSave(true, progressMonitor);
 	}
 
 }

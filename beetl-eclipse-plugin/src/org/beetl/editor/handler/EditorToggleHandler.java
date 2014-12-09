@@ -63,6 +63,7 @@ public class EditorToggleHandler extends AbstractHandler {
 				 
 			 }else{
 					String oldEditorId = wbPage.getActiveEditor().getEditorSite().getId();
+					System.out.println("open  beetl editor:"+oldEditor.getEditorInput());
 					BeetlEclipseEditor beetlEditor = (BeetlEclipseEditor) wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), editorId, true, IWorkbenchPage.MATCH_ID);
 					beetlEditor.setOldEditorId(oldEditorId);
 					newEditor = beetlEditor;
@@ -77,14 +78,12 @@ public class EditorToggleHandler extends AbstractHandler {
 			
 			 
 			 ITextEditor[] all = ProjectUtil.getEditors(file);
-			 EditorDocumentListener listener = new EditorDocumentListener(file);
+			 EditorDocumentListener listener =EditorDocumentListener.getDocumentListener(file);
 			 //检测是否已经有同步监听了
 			 for(ITextEditor ed:all){
 				
 				 Document doc = ProjectUtil.getDocument(ed);
 				 
-				 //删除没有的，添加新的
-				 doc.removeDocumentListener(listener);
 				 doc.addDocumentListener(listener);
 			 }
 			 

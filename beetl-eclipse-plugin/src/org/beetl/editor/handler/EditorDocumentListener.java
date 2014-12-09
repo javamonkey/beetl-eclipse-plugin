@@ -1,5 +1,8 @@
 package org.beetl.editor.handler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
@@ -11,9 +14,22 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class EditorDocumentListener implements IDocumentListener {
 	
+	static Map<IFile,EditorDocumentListener> map = new HashMap<IFile,EditorDocumentListener>();
+	
+	public synchronized static EditorDocumentListener getDocumentListener(IFile file){
+		EditorDocumentListener l = map.get(file);
+		if(l==null){
+			l = new EditorDocumentListener(file);
+			map.put(file,l);
+			
+		}
+		return l;
+		
+	}
+	
 	IFile file;
 	
-	public EditorDocumentListener(IFile file){
+	private EditorDocumentListener(IFile file){
 		this.file = file;
 		
 	}
@@ -82,6 +98,8 @@ public class EditorDocumentListener implements IDocumentListener {
 			return false;
 		return true;
 	}
+	
+	
 	
 	
 
