@@ -6,6 +6,11 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.internal.core.JavaModelManager;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -83,6 +88,22 @@ public class ProjectUtil {
 		 ISourceViewer viewer = (ISourceViewer)editor.getAdapter(ITextOperationTarget.class);
 		return viewer;
 
+	}
+	
+	public static String getProjectBeetlConfig(IFile file){
+		JavaProject project = (JavaProject)JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(file);
+		try {
+			IPath outputPath = project.getOutputLocation();
+			IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(outputPath);
+			IFile f = outputFolder.getFile("beetl.properties");
+			String tt = f.getLocation().toOSString();
+			return tt;
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	

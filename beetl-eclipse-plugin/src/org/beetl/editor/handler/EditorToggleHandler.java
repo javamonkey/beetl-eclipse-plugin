@@ -53,7 +53,7 @@ public class EditorToggleHandler extends AbstractHandler {
 				 BeetlEclipseEditor editor = (BeetlEclipseEditor)oldEditor;
 				 String oldEditorId = editor.getOldEditorId();
 				 if(oldEditorId!=null){
-					 newEditor =  wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), oldEditorId, true, IWorkbenchPage.MATCH_ID);
+					 newEditor =  wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), oldEditorId, true, IWorkbenchPage.MATCH_ID|IWorkbenchPage.MATCH_INPUT);
 						
 				 }else{
 					 return null;
@@ -64,7 +64,7 @@ public class EditorToggleHandler extends AbstractHandler {
 			 }else{
 					String oldEditorId = wbPage.getActiveEditor().getEditorSite().getId();
 					System.out.println("open  beetl editor:"+oldEditor.getEditorInput());
-					BeetlEclipseEditor beetlEditor = (BeetlEclipseEditor) wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), editorId, true, IWorkbenchPage.MATCH_ID);
+					BeetlEclipseEditor beetlEditor = (BeetlEclipseEditor) wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), editorId, true, IWorkbenchPage.MATCH_ID|IWorkbenchPage.MATCH_INPUT);
 					beetlEditor.setOldEditorId(oldEditorId);
 					newEditor = beetlEditor;
 					
@@ -75,7 +75,7 @@ public class EditorToggleHandler extends AbstractHandler {
 			 
 			 IFile file = ProjectUtil.getInputFile(oldEditor.getEditorInput());
 			 //同样文件
-			
+			 String tt =ProjectUtil.getProjectBeetlConfig(file);
 			 
 			 ITextEditor[] all = ProjectUtil.getEditors(file);
 			 EditorDocumentListener listener =EditorDocumentListener.getDocumentListener(file);
