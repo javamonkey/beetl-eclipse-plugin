@@ -12,12 +12,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -122,11 +124,17 @@ public class ProjectUtil {
 		String path = webRoot.get(project);
 		if(path==null){
 			//代开窗口
-			
+			InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(),//shell窗口
+		               "Beetl","输入模板跟路径", file.getFullPath().toOSString(),null);
+		        
+		        int i = dialog.open();//返回值为按钮
 		
-				IFile root = project.getFile("/");
-				path = root.getLocationURI().toString();
+				path = dialog.getValue();
+				
+			
+//				path = root.getLocationURI().toString();
 				webRoot.put(project, path);
+				IFile root = project.getFile(path);
 				return path;
 			
 		}else{
