@@ -25,7 +25,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  */
 public class EditorToggleHandler extends AbstractHandler {
 	
-	static String editorId = "org.beetl.editors.BeetlEclipseEditor";
+	static String editorId = ProjectUtil.editorId;
 	/**
 	 * The constructor.
 	 */

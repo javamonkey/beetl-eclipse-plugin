@@ -23,6 +23,9 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 public class ProjectUtil {
 	
+	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
+	
+	
 	/** 切换编辑器
 	 * @param event
 	 */
@@ -92,6 +95,7 @@ public class ProjectUtil {
 	
 	public static String getProjectBeetlConfig(IFile file){
 		JavaProject project = (JavaProject)JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(file);
+		
 		try {
 			IPath outputPath = project.getOutputLocation();
 			IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(outputPath);

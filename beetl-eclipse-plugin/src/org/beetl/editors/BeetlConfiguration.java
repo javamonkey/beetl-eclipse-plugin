@@ -1,24 +1,29 @@
 package org.beetl.editors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.beetl.MyIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
+import org.eclipse.jface.text.hyperlink.URLHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
-public class BeetlConfiguration extends SourceViewerConfiguration {
+public class BeetlConfiguration extends TextSourceViewerConfiguration {
 
 	
 
 	public BeetlConfiguration() {
 		super();
+		
 		
 			
 			
@@ -77,5 +82,18 @@ public class BeetlConfiguration extends SourceViewerConfiguration {
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer){
 		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART};
+	}
+
+	
+	protected Map getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
+		Map targets= new HashMap();
+		targets.put(EditorsUI.DEFAULT_TEXT_EDITOR_ID, null);
+		targets.put(ProjectUtil.editorId, null);
+		return targets;
+	}
+	
+	
+	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+		return new IHyperlinkDetector[] { new URLHyperlinkDetector() ,new BeetlHyperlinkDetector()};
 	}
 }
