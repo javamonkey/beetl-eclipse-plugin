@@ -35,7 +35,7 @@ public class BeetlTemplateHyperlink implements IHyperlink {
 	@Override
 	public void open() {
 		// TODO Auto-generated method stub
-		return ;
+		System.out.println(templatePath);
 
 	}
 

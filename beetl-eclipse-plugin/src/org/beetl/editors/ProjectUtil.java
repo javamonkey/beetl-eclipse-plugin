@@ -1,14 +1,18 @@
 package org.beetl.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jface.text.Document;
@@ -25,6 +29,8 @@ public class ProjectUtil {
 	
 	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
 	
+	// 每个工程模板的跟目录
+	static Map<IProject,String> webRoot = new HashMap<IProject,String>();
 	
 	/** 切换编辑器
 	 * @param event
@@ -33,7 +39,7 @@ public class ProjectUtil {
 	public static int getCaretOffset(ITextEditor te){
 		
 			 ISourceViewer viewer = (ISourceViewer)
-		            te.getAdapter(ITextOperationTarget.class);
+		            te.getAdapter(ITextOperationTarget.class);			 
 		        return    viewer.getTextWidget().getCaretOffset();
 		   
 		
@@ -108,6 +114,26 @@ public class ProjectUtil {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	public static String getProjectTemplateRoot(IFile file){
+		IProject project = file.getProject();
+		String path = webRoot.get(project);
+		if(path==null){
+			//代开窗口
+			
+		
+				IFile root = project.getFile("/");
+				path = root.getLocationURI().toString();
+				webRoot.put(project, path);
+				return path;
+			
+		}else{
+			return path;
+		}
+		
+	
 	}
 	
 	

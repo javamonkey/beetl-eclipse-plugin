@@ -32,6 +32,7 @@ public class BeetlEclipseEditor extends TextEditor {
 	
 	public ISourceViewer getSourceView(){
 		ISourceViewer viewer= getSourceViewer();
+		
 		return viewer;
 	}
 	
