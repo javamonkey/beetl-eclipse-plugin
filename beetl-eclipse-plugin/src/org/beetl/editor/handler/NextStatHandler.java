@@ -1,12 +1,17 @@
 package org.beetl.editor.handler;
 
+import java.awt.Toolkit;
+
+import org.beetl.core.parser.BeetlToken;
+import org.beetl.editors.BeetlTokenSource;
 import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -26,24 +31,27 @@ public class NextStatHandler extends AbstractHandler {
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
+		 ITextEditor editor =  ProjectUtil.getActiveEditor(event) ;
+		 Document document = ProjectUtil.getDocument(editor);
+		 String content = document.get();
+		BeetlTokenSource s = new BeetlTokenSource(null);
+		s.parse(content);
 		
-		System.out.println("okok");
-		 /*
-		 if(part instanceof BeetlEclipseEditor){
-			 BeetlEclipseEditor editor = (BeetlEclipseEditor)part;
-			 ISourceViewer view = editor.getSourceView();
-			// caretOffset = view.getTextWidget().getCaretOffset();
-//			 view.getTextWidget().setSelection(10);
-//			 //view.setSelectedRange(10, 2);
-//			 //FileEditorInput input = (FileEditorInput)editor.getEditorInput();
-////			 input.getAdapter(adapter)
-			
-			 
-		 }else if(part instanceof AbstractTextEditor){
-			 
-		 }
-		 */
-		
+		 ISourceViewer viewer = (ISourceViewer)
+		            editor.getAdapter(ITextOperationTarget.class);			 
+		 int offset  =   viewer.getTextWidget().getCaretOffset();
+		 
+		BeetlToken token = s.findNextStOrHolder(offset);
+		if(token==null){
+			Toolkit.getDefaultToolkit().beep();
+			return null;
+		}
+		int newOffset = token.end;
+		viewer.getTextWidget().setSelection(newOffset);
 		return null;
+		
+	
+	
+		
 	}
 }

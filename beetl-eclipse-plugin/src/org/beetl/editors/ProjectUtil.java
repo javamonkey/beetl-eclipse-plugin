@@ -44,6 +44,8 @@ public class ProjectUtil {
 		        return    viewer.getTextWidget().getCaretOffset();
 		   
 		
+		        
+		        
 	}
 	
 	public static void syncText(ITextEditor[] texts){

@@ -67,11 +67,9 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 	}
 	
 	public IFile getPath(IFile base,String p){
-		if(p.startsWith("../")){
-			return base.getParent().getFile(new Path(p.substring(3)));
-		}
 		
-		return null;
+			return (IFile)base.getParent().findMember(p);
+	
 	}
 
 }
