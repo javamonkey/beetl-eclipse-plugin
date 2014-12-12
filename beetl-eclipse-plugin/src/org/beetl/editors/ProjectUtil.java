@@ -14,8 +14,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -24,6 +22,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -32,7 +31,7 @@ public class ProjectUtil {
 	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
 	
 	// 每个工程模板的跟目录
-	static Map<IProject,String> webRoot = new HashMap<IProject,String>();
+	static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
 	
 	/** 切换编辑器
 	 * @param event
@@ -119,24 +118,27 @@ public class ProjectUtil {
 	}
 	
 	
-	public static String getProjectTemplateRoot(IFile file){
+	public static IPath getProjectTemplateRoot(IFile file){
 		IProject project = file.getProject();
-		String path = webRoot.get(project);
+		IPath path = webRoot.get(project);
 		if(path==null){
-			//代开窗口
-			InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(),//shell窗口
-		               "Beetl","输入模板跟路径", file.getFullPath().toOSString(),null);
-		        
-		        int i = dialog.open();//返回值为按钮
-		
-				path = dialog.getValue();
-				
+
 			
-//				path = root.getLocationURI().toString();
-				webRoot.put(project, path);
-				IFile root = project.getFile(path);
-				return path;
-			
+			ContainerSelectionDialog dialog = new ContainerSelectionDialog(
+					Display.getCurrent().getActiveShell(), ResourcesPlugin
+							.getWorkspace().getRoot(), true, "请选择模板根目录");
+			if (dialog.open() == ContainerSelectionDialog.OK) {
+				Object[] result = dialog.getResult();
+				if (result.length == 1) {
+					path = (IPath) result[0];
+					webRoot.put(project, path);
+					
+					
+					return path;
+				}
+			}
+			return null;
+
 		}else{
 			return path;
 		}
