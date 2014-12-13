@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.beetl.core.parser.BeetlToken;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
@@ -150,20 +151,6 @@ public class ProjectUtil {
 	
 	
 	
-//	private IProject getActiveProject() {
-//		IEditorPart editor = PlatformUI.getWorkbench()
-//				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-//		if (editor.getEditorInput() instanceof FileEditorInput) {
-//			FileEditorInput fei = (FileEditorInput) editor.getEditorInput();
-//			IFile f = fei.getFile();
-//			return f.getProject();
-//		}
-//		return null;
-//	}
-//	
-//	public void change(){
-//		IWorkbenchPage wbPage = PlatformUI.getWorkbench()  
-//                .getActiveWorkbenchWindow().getActivePage();  
-//		
-//	}
+	
+
 }

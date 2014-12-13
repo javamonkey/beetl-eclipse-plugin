@@ -35,7 +35,15 @@
             id="beetl-eclipse-plugin.command.preStatCommand">
       </command>
       
+      <command
+      		categoryId="beetl-eclipse-plugin.commands.category"
+      		name = "anotherPairCommand"
+            id="beetl-eclipse-plugin.command.anotherPairCommand">
+      </command>
+      
    </extension>
+   
+   
    <extension
          point="org.eclipse.ui.handlers">
       <handler
@@ -59,8 +67,14 @@
             commandId="beetl-eclipse-plugin.command.preStatCommand" >
            
       </handler>
-      
-      
+   </extension>
+   
+     <extension
+         point="org.eclipse.ui.handlers">
+     <handler
+            class="org.beetl.editor.handler.AnotherPairHandler"
+            commandId="beetl-eclipse-plugin.command.anotherPairCommand" >           
+      </handler>
    </extension>
    
    
@@ -73,8 +87,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+4">
       </key>
-   </extension>
-   
+   </extension>   
    
    
     <extension
@@ -88,6 +101,7 @@
     
    </extension>
    
+   
     <extension
          point="org.eclipse.ui.bindings">
       <key
@@ -96,9 +110,22 @@
             contextId="beetl-eclipse-plugin.beetlcontext"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+3">
-      </key>
-    
+      </key>    
    </extension>
+   
+    <extension
+         point="org.eclipse.ui.bindings">
+      <key
+      	
+           	commandId="beetl-eclipse-plugin.command.anotherPairCommand"
+            contextId="beetl-eclipse-plugin.beetlcontext"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+P">
+      </key>    
+   </extension>
+   
+   
+   
    
    <extension
          point="org.eclipse.ui.contexts">

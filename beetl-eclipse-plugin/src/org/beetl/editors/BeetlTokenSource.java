@@ -46,77 +46,139 @@ public class BeetlTokenSource {
 	}
 
 	public Object[] find(int p) {
-		int i=0;
+		int i = 0;
 		for (BeetlToken token : tokens) {
-			
-			if (p <= token.end&&p >= token.start) {
-				
-				return new Object[]{token,i};				
+
+			if (p <= token.end && p >= token.start) {
+
+				return new Object[] { token, i };
 			}
 			i++;
 		}
 		return null;
 	}
-	
-	
-	public BeetlToken findNextStOrHolder(int p){
-		
+
+	public BeetlToken findNextStOrHolder(int p) {
+
 		int step = 0;
-		for (int i=0;i<tokens.size();i++) {
+		for (int i = 0; i < tokens.size(); i++) {
 			BeetlToken token = tokens.get(i);
-			if (step==0 &&p <= token.end&&p >= token.start) {
-				step=1;
-				continue ;
-							
+			if (step == 0 && p <= token.end && p >= token.start) {
+				step = 1;
+				continue;
+
 			}
-			if(step==1){
-				if(token.getType()==BeetlLexer.PH_SS_TT){
+			if (step == 1) {
+				if (token.getType() == BeetlLexer.PH_SS_TT) {
 					return token;
-				}else if(token.getType()==BeetlLexer.ST_SS_TT){
-					//如果后面有回车，则定位到下一个token那
-					if(i+1<tokens.size()){
-						BeetlToken nextToken = tokens.get(i+1);
+				} else if (token.getType() == BeetlLexer.ST_SS_TT) {
+					// 如果后面有回车，则定位到下一个token那
+					if (i + 1 < tokens.size()) {
+						BeetlToken nextToken = tokens.get(i + 1);
 						return nextToken;
-					}else{
+					} else {
 						return token;
 					}
 				}
-				
+
 			}
 			;
 		}
 		return null;
-		
+
 	}
-	
-public BeetlToken findPreStOrHolder(int p){
-		
+
+	public BeetlToken findPreStOrHolder(int p) {
+
 		Object[] obj = this.find(p);
-		if(obj==null) return null ;
-		int max = (Integer)obj[1];
+		if (obj == null)
+			return null;
+		int max = (Integer) obj[1];
 		int status = 0;
-		
-		for (int i=max-1;i>=0;i--) {
+
+		for (int i = max - 1; i >= 0; i--) {
 			BeetlToken token = tokens.get(i);
-			if(status==0&&token.getType()==BeetlLexer.PH_SE_TT){
+			if (status == 0 && token.getType() == BeetlLexer.PH_SE_TT) {
 				status = 1;
-				continue ;
-			}else if(status==0&&token.getType()==BeetlLexer.ST_SE_TT){
+				continue;
+			} else if (status == 0 && token.getType() == BeetlLexer.ST_SE_TT) {
 				status = 2;
-				continue ;
-			
-			}else if(status==1&&token.getType()==BeetlLexer.PH_SS_TT){
-				//找到
+				continue;
+
+			} else if (status == 1 && token.getType() == BeetlLexer.PH_SS_TT) {
+				// 找到
 				return token;
-			}else if(status==2&&token.getType()==BeetlLexer.ST_SS_TT){
-				//如果后面有回车，则定位到下一个token那
-				BeetlToken nextToken = tokens.get(i+1);
+			} else if (status == 2 && token.getType() == BeetlLexer.ST_SS_TT) {
+				// 如果后面有回车，则定位到下一个token那
+				BeetlToken nextToken = tokens.get(i + 1);
 				return nextToken;
-				
+
 			}
 			;
 		}
 		return null;
-		
+
+	}
+
+	/**
+	 * 找到配对的
+	 * 
+	 * @param p
+	 * @param leftType
+	 * @param rightType
+	 * @return
+	 */
+	public BeetlToken findPair(int p, int leftType, int rightType) {
+
+		Object[] obj = this.find(p);
+		if (obj == null)
+			return null;
+		BeetlToken choose = (BeetlToken) obj[0];
+
+		if (choose.type == leftType) {
+			// 向后找
+			int start = (Integer) obj[1];
+			int end = this.tokens.size();
+			int k = 0;
+			for (int i = start + 1; i < end; i++) {
+				BeetlToken target = tokens.get(i);
+				if (target.getType() == leftType) {
+					k++;
+					continue;
+				}
+				if (target.getType() == rightType) {
+					if (k == 0) {
+						return target;
+					} else {
+						k--;
+					}
+
+				}
+			}
+
+		} else if (choose.type == rightType) {
+			// 向前找
+			int start = (Integer) obj[1];
+
+			int k = 0;
+			for (int i = start - 1; i >= 0; i--) {
+				BeetlToken target = tokens.get(i);
+				if (target.getType() == rightType) {
+					k++;
+					continue;
+				}
+				if (target.getType() == leftType) {
+					if (k == 0) {
+						return target;
+					} else {
+						k--;
+					}
+
+				}
+			}
+		}
+
+		return null;
+
 	}
 }

@@ -9,6 +9,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
+/**
+ * 
+ * @author joelli
+ *
+ */
 
 public class BeetlCharacterPairMatcher implements ICharacterPairMatcher {
 
@@ -35,6 +40,7 @@ public class BeetlCharacterPairMatcher implements ICharacterPairMatcher {
 		String text = doc.get();
 		BeetlTokenSource source = new BeetlTokenSource(null);
 		source.parse(text);
+	
 		Object[] info = source.find(offset);
 		if(info==null) return null;
 		BeetlToken t = (BeetlToken)info[0];
