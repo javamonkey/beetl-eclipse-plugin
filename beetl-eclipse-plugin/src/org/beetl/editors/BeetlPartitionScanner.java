@@ -5,6 +5,7 @@ import org.beetl.core.parser.BeetlToken;
 import org.beetl.core.parser.LexerDelimiter;
 import org.beetl.core.parser.Source;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
@@ -28,7 +29,11 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	String content = null;
 	int length = 0;
 	BeetlToken lastToken = new BeetlToken();;
-
+	
+	BeetlEclipseEditor editor = null;
+	public BeetlPartitionScanner(BeetlEclipseEditor editor  ){
+		this.editor = editor;
+	}
 	@Override
 	public int getTokenLength() {
 		return length;
@@ -49,6 +54,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				length = token.end - token.start;
 				this.lastToken = token;
 				debug(textToken);
+				//Position pos = new Position(token.start,length);
+				//editor.addFoldingStructure(pos);
 				return textToken;
 			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
 				offset = token.start;
@@ -88,8 +95,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	}
 
 	private void debug(Token t) {
-		System.out.println("offset=" + (this.offset + this.partionOffset)
-				+ " len=" + this.length + " type=" + t.getData());
+//		System.out.println("offset=" + (this.offset + this.partionOffset)
+//				+ " len=" + this.length + " type=" + t.getData());
 	}
 
 	@Override
@@ -126,13 +133,13 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	}
 
 	public static void main(String[] args) {
-		BeetlPartitionScanner s = new BeetlPartitionScanner();
-		String test = "abc${";
-		s.testInit(test);
-		Token token = null;
-		while ((token = (Token) s.nextToken()) != Token.EOF) {
-			System.out.println(s.offset + ":" + s.length);
-		}
+//		BeetlPartitionScanner s = new BeetlPartitionScanner(n);
+//		String test = "abc${";
+//		s.testInit(test);
+//		Token token = null;
+//		while ((token = (Token) s.nextToken()) != Token.EOF) {
+//			System.out.println(s.offset + ":" + s.length);
+//		}
 
 	}
 

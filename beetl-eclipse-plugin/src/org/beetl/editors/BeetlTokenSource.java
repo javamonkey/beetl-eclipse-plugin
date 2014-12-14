@@ -181,4 +181,10 @@ public class BeetlTokenSource {
 		return null;
 
 	}
+
+	public List<BeetlToken> getTokens() {
+		return tokens;
+	}
+	
+	
 }

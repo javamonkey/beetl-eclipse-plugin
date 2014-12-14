@@ -1,5 +1,8 @@
 package org.beetl.editor.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.beetl.editors.BeetlEclipseEditor;
 import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.commands.AbstractHandler;
@@ -10,6 +13,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -67,6 +71,8 @@ public class EditorToggleHandler extends AbstractHandler {
 					BeetlEclipseEditor beetlEditor = (BeetlEclipseEditor) wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), editorId, true, IWorkbenchPage.MATCH_ID|IWorkbenchPage.MATCH_INPUT);
 					beetlEditor.setOldEditorId(oldEditorId);
 					newEditor = beetlEditor;
+				
+					
 					
 			 }
 			 
@@ -86,6 +92,8 @@ public class EditorToggleHandler extends AbstractHandler {
 				 
 				 doc.addDocumentListener(listener);
 			 }
+			 
+			 
 			 
 		 }catch(Exception ex){
 			 ex.printStackTrace();

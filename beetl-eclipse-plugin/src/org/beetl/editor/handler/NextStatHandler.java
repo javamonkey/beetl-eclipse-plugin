@@ -10,7 +10,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
-import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
@@ -37,7 +37,7 @@ public class NextStatHandler extends AbstractHandler {
 		BeetlTokenSource s = new BeetlTokenSource(null);
 		s.parse(content);
 		
-		 ISourceViewer viewer = (ISourceViewer)
+		ProjectionViewer viewer = (ProjectionViewer)
 		            editor.getAdapter(ITextOperationTarget.class);			 
 		 int offset  =   viewer.getTextWidget().getCaretOffset();
 		 
@@ -48,6 +48,7 @@ public class NextStatHandler extends AbstractHandler {
 		}
 		int newOffset = token.end;
 		viewer.getTextWidget().setSelection(newOffset);
+		
 		return null;
 		
 	

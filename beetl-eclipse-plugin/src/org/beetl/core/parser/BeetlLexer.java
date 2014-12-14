@@ -487,14 +487,17 @@ public class BeetlLexer {
 		int start = source.pos();
 		int col = state.col;
 		int line = state.line;
+		int endLine = line ;
 		while ((c = source.get()) != source.EOF) {
 			if (c != ld.ps[0] && c != ld.ss[0]) {
 
 				if (c == '\r' || c == '\n') {
 					consumeMoreCR(c);
+					endLine++;
 				} else {
 					source.consume();
 				}
+				
 			} else {
 				if (c == ld.ps[0] && source.isMatch(ld.ps)) {
 
@@ -529,8 +532,19 @@ public class BeetlLexer {
 				return null;
 			}
 		}
-
-		return getStaticTextToken(start, source.pos(), col, line);
+		
+		if(endLine>line){
+			if(source.state.col!=1){
+				//结束的时候，col不在第一列，说明静态文本已经到下一行了
+				return getStaticTextToken(start, source.pos(), col, line,endLine);
+			}else{
+				//结束的时候，col在第一列，说明静态文本到本行结束
+				return getStaticTextToken(start, source.pos(), col, line,endLine-1);
+			}
+		}else{
+			return getStaticTextToken(start, source.pos(), col, line,endLine);
+		}
+		
 
 	}
 
@@ -664,14 +678,15 @@ public class BeetlLexer {
 		return token;
 	}
 
-	private BeetlToken getStaticTextToken(int start, int end, int col, int line) {
+	private BeetlToken getStaticTextToken(int start, int end, int col, int line,int endLine) {
 
 		String text = source.getRange(start, end);
-		BeetlToken token = new BeetlToken(TEXT_TT, text);
+		BeetlTextToken token = new BeetlTextToken(TEXT_TT, text);
 		token.col = col;
 		token.line = line;
 		token.start = start;
 		token.end = end;
+		token.endLine = endLine;
 
 		return token;
 
@@ -753,6 +768,7 @@ public class BeetlLexer {
 	}
 
 	private BeetlToken getCRToken(int crFirst) {
+		state.addLine();
 		if (state.cr_len != 0) {
 			return this.getCharToken(state.cr_len, CR_TT);
 		} else {
@@ -770,6 +786,7 @@ public class BeetlLexer {
 				state.cr_len = 1;
 
 			}
+			
 			return this.getCharToken(state.cr_len, CR_TT);
 		}
 

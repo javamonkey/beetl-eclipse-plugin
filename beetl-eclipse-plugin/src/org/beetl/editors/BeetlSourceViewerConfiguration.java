@@ -17,12 +17,13 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
-public class BeetlConfiguration extends TextSourceViewerConfiguration {
+public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguration {
 
 	
-
-	public BeetlConfiguration() {
+	BeetlEclipseEditor editor ;
+	public BeetlSourceViewerConfiguration(BeetlEclipseEditor editor) {
 		super();
+		this.editor = editor;
 		
 		
 			

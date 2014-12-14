@@ -1,68 +1,126 @@
 package org.beetl.editors;
 
-import org.eclipse.core.runtime.CoreException;
+import java.util.HashMap;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class BeetlEclipseEditor extends TextEditor {
 
 	public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
-	public final static String EDITOR_MATCHING_BRACKETS_COLOR= "matchingBracketsColor";
+	public final static String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
 
 	private String oldEditorId = null;
-	
+
+	private ProjectionSupport projectionSupport;
+	private Annotation[] oldAnnotations;
+	private ProjectionAnnotationModel annotationModel;
+
 	public BeetlEclipseEditor() {
 		super();
-		
-		setSourceViewerConfiguration(new BeetlConfiguration());
-		setDocumentProvider(new BeetlDocumentProvider());
-	
-	
-		
+
+		setSourceViewerConfiguration(new BeetlSourceViewerConfiguration(this));
+		setDocumentProvider(new BeetlDocumentProvider(this));
+
 	}
-	
-	public ISourceViewer getSourceView(){
-		ISourceViewer viewer= getSourceViewer();
+
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+
+		projectionSupport = new ProjectionSupport(viewer,
+				getAnnotationAccess(), getSharedColors());
+		projectionSupport.install();
+
+		// turn projection mode on
+		viewer.doOperation(ProjectionViewer.TOGGLE);
+
+		annotationModel = viewer.getProjectionAnnotationModel();
+
+	}
+
+	protected ISourceViewer createSourceViewer(Composite parent,
+			IVerticalRuler ruler, int styles) {
+		ISourceViewer viewer = new ProjectionViewer(parent, ruler,
+				getOverviewRuler(), isOverviewRulerVisible(), styles);
+
+		// ensure decoration support has been created and configured.
+		getSourceViewerDecorationSupport(viewer);
+		
+		
 		
 		return viewer;
 	}
 	
+	public void addFoldingStructure(Position pos){
+		 ProjectionAnnotation annotation = new ProjectionAnnotation();
+		 if(annotationModel==null) return ;
+		 annotationModel.addAnnotation(annotation, pos);
+	}
 	
-	
+	public void updateFoldingStructure(List positions)
+	{
+	   
+		
+		Annotation[] annotations = new Annotation[positions.size()];
+
+	   //this will hold the new annotations along
+	   //with their corresponding positions
+	   HashMap newAnnotations = new HashMap();
+
+	   for(int i = 0; i < positions.size();i++)
+	   {
+	      ProjectionAnnotation annotation = new ProjectionAnnotation();
+
+	      newAnnotations.put(annotation, positions.get(i));
+
+	      annotations[i] = annotation;
+	   }
+
+	   annotationModel.modifyAnnotations(oldAnnotations, newAnnotations,null);
+
+	   oldAnnotations = annotations;
+	  
+	}
+
 	@Override
-	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+	protected void configureSourceViewerDecorationSupport(
+			SourceViewerDecorationSupport support) {
 		/*
 		 * Set the block matcher
 		 */
 		support.setCharacterPairMatcher(new BeetlCharacterPairMatcher());
-		support.setMatchingCharacterPainterPreferenceKeys(EDITOR_MATCHING_BRACKETS, EDITOR_MATCHING_BRACKETS_COLOR);
+		support.setMatchingCharacterPainterPreferenceKeys(
+				EDITOR_MATCHING_BRACKETS, EDITOR_MATCHING_BRACKETS_COLOR);
 		IPreferenceStore store = getPreferenceStore();
 		store.setDefault(EDITOR_MATCHING_BRACKETS, true);
 		store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
-		
+
 		/**
-		 * 配置编辑器上下文 用来绑定  快捷键
+		 * 配置编辑器上下文 用来绑定 快捷键
 		 */
-		IContextService contextService = 
-		(IContextService) getSite().getService(IContextService.class);
+		IContextService contextService = (IContextService) getSite()
+				.getService(IContextService.class);
 		contextService.activateContext("beetl-eclipse-plugin.beetlcontext");
-		
+
 		super.configureSourceViewerDecorationSupport(support);
 	}
-	
-	
-	
+
 	public void dispose() {
-		
+
 		super.dispose();
 	}
 
@@ -73,11 +131,15 @@ public class BeetlEclipseEditor extends TextEditor {
 	public void setOldEditorId(String oldEditorId) {
 		this.oldEditorId = oldEditorId;
 	}
-	
-	
-	protected void performSave(boolean overwrite, IProgressMonitor progressMonitor) {
-		//总是覆盖，否则，不能保存beetl editor
+
+	protected void performSave(boolean overwrite,
+			IProgressMonitor progressMonitor) {
+		// 总是覆盖，否则，不能保存beetl editor
 		super.performSave(true, progressMonitor);
+	}
+
+	public ProjectionAnnotationModel getAnnotationModel() {
+		return annotationModel;
 	}
 
 }
