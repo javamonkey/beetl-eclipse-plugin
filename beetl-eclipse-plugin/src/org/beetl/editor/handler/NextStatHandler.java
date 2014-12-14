@@ -3,6 +3,7 @@ package org.beetl.editor.handler;
 import java.awt.Toolkit;
 
 import org.beetl.core.parser.BeetlToken;
+import org.beetl.editors.BeetlEclipseEditor;
 import org.beetl.editors.BeetlTokenSource;
 import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.commands.AbstractHandler;
@@ -11,7 +12,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -31,7 +31,7 @@ public class NextStatHandler extends AbstractHandler {
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		 ITextEditor editor =  ProjectUtil.getActiveEditor(event) ;
+		BeetlEclipseEditor editor = (BeetlEclipseEditor) ProjectUtil.getActiveEditor(event) ;
 		 Document document = ProjectUtil.getDocument(editor);
 		 String content = document.get();
 		BeetlTokenSource s = new BeetlTokenSource(null);
@@ -47,6 +47,8 @@ public class NextStatHandler extends AbstractHandler {
 			return null;
 		}
 		int newOffset = token.end;
+		editor.getAnnotationModel().removeAllAnnotations();
+		
 		viewer.getTextWidget().setSelection(newOffset);
 		
 		return null;
