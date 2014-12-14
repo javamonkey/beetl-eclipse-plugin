@@ -37,7 +37,7 @@ public class FoldingHandler extends AbstractHandler {
 	 */
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		//暂时不做，折叠后会导致光标定位失败，除非定位前取消折叠，但似乎取消后，editor混乱了
-		if(1==1)return null;
+		//if(1==1)return null;
 		BeetlEclipseEditor editor =  (BeetlEclipseEditor)ProjectUtil.getActiveEditor(event) ;
 		 Document document = ProjectUtil.getDocument(editor);
 		 String content = document.get();

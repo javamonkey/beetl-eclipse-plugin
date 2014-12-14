@@ -49,7 +49,8 @@ public class NextStatHandler extends AbstractHandler {
 		int newOffset = token.end;
 		editor.getAnnotationModel().removeAllAnnotations();
 		
-		viewer.getTextWidget().setSelection(newOffset);
+		//viewer.getTextWidget().setSelection(newOffset);
+		editor.selectAndReveal(newOffset, 0);
 		
 		return null;
 		

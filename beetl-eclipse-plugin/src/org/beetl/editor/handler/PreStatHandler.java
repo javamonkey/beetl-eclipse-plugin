@@ -50,7 +50,8 @@ public class PreStatHandler extends AbstractHandler {
 			return null;
 		}
 		int newOffset = token.end;
-		viewer.getTextWidget().setSelection(newOffset);
+		//viewer.getTextWidget().setSelection(newOffset);
+		editor.selectAndReveal(newOffset, 0);
 		return null;
 		
 	}
