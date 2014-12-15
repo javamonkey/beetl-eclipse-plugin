@@ -98,13 +98,15 @@ public class BeetlLexer {
 	public final static int LEFT_TOKEN_TT = 62;
 	public final static int RIGHT_TOKEN_TT = 63;
 	public final static int LEFT_TEXT_TOKEN_TT = 64;
+	public final static int SINGLE_LINE_COMMENT_TOKEN_TT = 65;
+	public final static int MUTIPLE_LINE_COMMENT_TOKEN_TT = 66;
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
 			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", 
 			"else", "for" , "in", "continue", "break" , "return" ,
 			"elsefor","while","switch","select","directive","DIRECTIVE","case","default","try","catch",
-			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$"};
+			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$","//","/**/"};
 	
 	public static Set<String> tokenSet = new HashSet<String>(tokens.length);
 	
@@ -450,9 +452,16 @@ public class BeetlLexer {
 				return this.getCharToken(1, MUlTIP_TT);
 
 			} else if (c == '/') {
-				return this.getCharToken(1, DIV_TT);
+				if(this.forwardMatch('/')){
+					source.consume(2);
+					return this.comsumeSingleLineComment();
+				}else{
+					return this.getCharToken(1, DIV_TT);
+				}
+				
 
 			} else if (c == '%') {
+				
 				return this.getCharToken(1, MOD_TT);
 
 			} else if (c == '=') {
@@ -842,10 +851,36 @@ public class BeetlLexer {
 		return token;
 
 	}
+	
+	private BeetlToken  comsumeSingleLineComment(){
+		int c = source.get();
+		int line = state.line;
+		int start = source.pos();
+		while ((c = source.get()) != Source.EOF) {
+			if (c == '\r' || c == '\n') {				
+				consumeMoreCR(c);
+				break;
+			} else {
+				source.consume();
+			}
+		}
+
+		BeetlToken token = new BeetlToken();
+		token.col = state.col;
+		token.start = start;
+		token.end = source.pos();
+		token.line = line;
+		token.text = source.getRange(start, source.pos());
+		token.type = SINGLE_LINE_COMMENT_TOKEN_TT;
+		token.channel = 1;
+		return token;
+	}
+
 
 	public static void main(String[] args) {
 		System.err.println(tokens.length);
-		String template = "ab${";
+		String template = "<% //"
+				+ "%>";
 		Source source = new Source(template);
 		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 
