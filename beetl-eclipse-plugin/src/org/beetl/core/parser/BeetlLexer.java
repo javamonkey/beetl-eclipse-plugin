@@ -167,13 +167,20 @@ public class BeetlLexer {
 		switch (state.model) {
 		case LexerState.STATIC_MODEL:
 			return textModel();
-		case LexerState.PH_MODEL:
-			return statementModel();
+		case LexerState.PH_MODEL:{
+			BeetlToken  t =  statementModel();			
+			return t ;
+		}
+			
 		case LexerState.COMMENT_MODEL:{
 			return commentModel();
 		}
-		case LexerState.ST_MODEL:
-			return statementModel();
+		case LexerState.ST_MODEL:{
+			BeetlToken  t =  statementModel();
+			
+			return t ;
+		}
+			
 		case LexerState.PH_START:
 			return placeHolderStartToken();
 		case LexerState.ST_START:

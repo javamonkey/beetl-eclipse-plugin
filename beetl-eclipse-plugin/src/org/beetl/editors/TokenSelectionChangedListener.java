@@ -27,8 +27,7 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 		if (BeetlLexer.contains(selction.getText())) {
 			return;
 		}
-		System.out.println("不包含..");
-		
+	
 		int offset = selction.getOffset();
 		int len = selction.getLength();
 		SourceViewer view =(SourceViewer)event.getSource();

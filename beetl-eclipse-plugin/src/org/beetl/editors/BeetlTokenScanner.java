@@ -56,9 +56,9 @@ public class BeetlTokenScanner implements ITokenScanner {
 		offset = arg1;
 		source = new BeetlTokenSource(this.type);
 		source.parse(content);
-		System.out.println("scan:" + content);
+//		System.out.println("scan:" + content);
 		it = source.tokens.iterator();
-		System.out.println("tokens:" + source.tokens);
+//		System.out.println("tokens:" + source.tokens);
 	}
 
 	private IToken getTokenByBeetlToken(BeetlToken t) {
