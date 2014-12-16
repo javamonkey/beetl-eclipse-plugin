@@ -13,8 +13,10 @@ public class Source {
 	public static int EOF = -1;
 	int mark = 0;
 	LexerState state = null;
+	String template = null;
 
 	public Source(String template) {
+		this.template = template;
 		cs = template.toCharArray();
 		size = cs.length;
 	}

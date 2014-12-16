@@ -17,6 +17,8 @@ public class LexerState {
 	public static final int ST_MODEL = 5;
 	public static final int ST_END = 6;
 	
+	public static final int COMMENT_MODEL = 7;
+	
 	
 	public void addLine(){
 		line++;

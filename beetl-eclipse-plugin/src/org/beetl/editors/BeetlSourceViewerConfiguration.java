@@ -47,6 +47,12 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.STATEMENT_PART));
 		reconciler.setDamager(dr, BeetlPartitionScanner.STATEMENT_PART);
 		reconciler.setRepairer(dr, BeetlPartitionScanner.STATEMENT_PART);
+		
+		dr = new BeetlDamagerRepairer(new BeetlTokenScanner(BeetlPartitionScanner.COMMENT_PART));
+		reconciler.setDamager(dr, BeetlPartitionScanner.COMMENT_PART);
+		reconciler.setRepairer(dr, BeetlPartitionScanner.COMMENT_PART);
+		
+		
 		final ISourceViewer temp =  sourceViewer;
 		sourceViewer.getSelectionProvider().addSelectionChangedListener(new TokenSelectionChangedListener ());
 		
@@ -82,7 +88,7 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer){
-		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART};
+		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART,BeetlPartitionScanner.COMMENT_PART};
 	}
 
 	

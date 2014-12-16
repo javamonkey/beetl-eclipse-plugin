@@ -1,4 +1,4 @@
-package org.beetl.editor.handler;
+package org.beetl.editors.handler;
 
 import java.util.HashMap;
 import java.util.Map;

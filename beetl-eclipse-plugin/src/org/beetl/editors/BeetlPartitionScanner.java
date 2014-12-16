@@ -1,8 +1,8 @@
 package org.beetl.editors;
-
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
 import org.beetl.core.parser.LexerDelimiter;
+import org.beetl.core.parser.LexerState;
 import org.beetl.core.parser.Source;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -15,9 +15,12 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	public static String PLACE_HOLDER_PART = "PLACE_HOLDER_PART";
 	public static String STATEMENT_PART = "STATEMENT_PART";
 	public static String STATIC_TEXT_PART = "STATIC_TEXT_PART";
-	static Token holderToken = new Token(PLACE_HOLDER_PART);
-	static Token textToken = new Token(STATIC_TEXT_PART);
-	static Token statementToken = new Token(STATEMENT_PART);
+	public static String COMMENT_PART = "COMMENT_TEXT_PART";
+
+	static Token HolderToken = new Token(PLACE_HOLDER_PART);
+	static Token TextToken = new Token(STATIC_TEXT_PART);
+	static Token StatementToken = new Token(STATEMENT_PART);
+	static Token CommentToken = new Token(COMMENT_PART);
 
 	Source source = null;
 	LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
@@ -29,6 +32,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	String content = null;
 	int length = 0;
 	BeetlToken lastToken = new BeetlToken();;
+	BeetlToken commToken = null;;
+	
 	
 	BeetlEclipseEditor editor = null;
 	public BeetlPartitionScanner(BeetlEclipseEditor editor  ){
@@ -53,10 +58,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				offset = token.start;
 				length = token.end - token.start;
 				this.lastToken = token;
-				debug(textToken);
-				//Position pos = new Position(token.start,length);
-				//editor.addFoldingStructure(pos);
-				return textToken;
+			
+				return TextToken;
 			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
 				offset = token.start;
 				length = this.ld.strSs.length();
@@ -68,8 +71,8 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				}
 
 				this.lastToken = token;
-				debug(statementToken);
-				return statementToken;
+				
+				return StatementToken;
 			} else if (token.getType() == BeetlLexer.PH_SS_TT) {
 				offset = token.start;
 				length = this.ld.strPs.length();
@@ -82,11 +85,11 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 				
 				
 				this.lastToken = token;
-				debug(holderToken);
-				return this.holderToken;
+				
+				return this.HolderToken;
 
 			} else {
-				return textToken;
+				return TextToken;
 			}
 
 		}
@@ -104,6 +107,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		String text = document.get();
 		content = text.substring(arg1, arg1 + arg2);
 		source = new Source(content);
+		
 		lexer = new BeetlLexer(source, ld);
 		lastToken = new BeetlToken();
 		this.length =0 ;
