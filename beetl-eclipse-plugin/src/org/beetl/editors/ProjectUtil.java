@@ -1,11 +1,9 @@
 package org.beetl.editors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.beetl.core.parser.BeetlToken;
+import org.beetl.activator.BeetlActivator;
+import org.beetl.preferences.PreferenceConstants;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
@@ -13,11 +11,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -32,7 +33,7 @@ public class ProjectUtil {
 	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
 	
 	// 每个工程模板的跟目录
-	static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
+	//static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
 	
 	/** 切换编辑器
 	 * @param event
@@ -123,18 +124,24 @@ public class ProjectUtil {
 	
 	public static IPath getProjectTemplateRoot(IFile file){
 		IProject project = file.getProject();
-		IPath path = webRoot.get(project);
-		if(path==null){
+		
+		IPreferenceStore store = BeetlActivator.getDefault().getPreferenceStore();
+		String templdatePath = store.getString(PreferenceConstants.P_STRING);
+		System.out.println("templdatePath: "+templdatePath);
+		IPath path = null;
+		//IPath path = webRoot.get(project);
+		if(templdatePath==null || "".equals(templdatePath)){
 
 			
 			ContainerSelectionDialog dialog = new ContainerSelectionDialog(
 					Display.getCurrent().getActiveShell(), ResourcesPlugin
 							.getWorkspace().getRoot(), true, "请选择模板根目录");
-			if (dialog.open() == ContainerSelectionDialog.OK) {
+			if (dialog.open() == Window.OK) {
 				Object[] result = dialog.getResult();
 				if (result.length == 1) {
 					path = (IPath) result[0];
-					webRoot.put(project, path);
+					store.setValue(PreferenceConstants.P_STRING, path.toOSString());
+					//webRoot.put(project, path);
 					
 					
 					return path;
@@ -143,6 +150,7 @@ public class ProjectUtil {
 			return null;
 
 		}else{
+			path = new Path(templdatePath);
 			return path;
 		}
 		
