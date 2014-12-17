@@ -20,7 +20,10 @@ public class BeetlTokenSource {
 			this.type = LexerState.PH_MODEL;
 		} else if (type == BeetlPartitionScanner.STATEMENT_PART) {
 			this.type = LexerState.ST_MODEL;
-		} else {
+		} /*else if(type==BeetlPartitionScanner.COMMENT_PART) {
+			this.type = LexerState.COMMENT_MODEL;
+		}*/
+		else {
 			this.type = LexerState.STATIC_MODEL;
 		}
 	}

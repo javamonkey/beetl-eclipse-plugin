@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -24,6 +25,7 @@ public class BeetlEclipseEditor extends TextEditor {
 	public final static String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
 
 	private String oldEditorId = null;
+	private boolean foldingAll = false;
 
 	private ProjectionSupport projectionSupport;
 	private Annotation[] oldAnnotations;
@@ -49,6 +51,8 @@ public class BeetlEclipseEditor extends TextEditor {
 		viewer.doOperation(ProjectionViewer.TOGGLE);
 
 		annotationModel = viewer.getProjectionAnnotationModel();
+		ProjectUtil.foldingDocument(this, (Document) viewer.getDocument());
+		
 
 	}
 
@@ -130,6 +134,14 @@ public class BeetlEclipseEditor extends TextEditor {
 
 	public void setOldEditorId(String oldEditorId) {
 		this.oldEditorId = oldEditorId;
+	}
+
+	public boolean isFoldingAll() {
+		return foldingAll;
+	}
+
+	public void setFoldingAll(boolean foldingAll) {
+		this.foldingAll = foldingAll;
 	}
 
 	protected void performSave(boolean overwrite,

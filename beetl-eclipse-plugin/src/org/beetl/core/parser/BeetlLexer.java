@@ -132,20 +132,22 @@ public class BeetlLexer {
 	LexerDelimiter ld;
 
 	public BeetlLexer(Source source, LexerDelimiter ld) {
-		state = new LexerState();
-		this.source = source;
-		this.ld = ld;
-		this.source.setState(state);
-		parseFirst();
+		 this(source, ld, -1);
 	}
-
 	public BeetlLexer(Source source, LexerDelimiter ld, int model) {
 		state = new LexerState();
 		this.source = source;
 		this.ld = ld;
 		this.source.setState(state);
-		state.model = model;
-
+		if(model==-1){
+			parseFirst();
+		}else{
+			state.model = model;
+		}
+		if(ld.strSe==null){
+			parseCR();
+		}
+	
 	}
 
 	private void parseFirst() {
@@ -162,6 +164,35 @@ public class BeetlLexer {
 			state.model = LexerState.STATIC_MODEL;
 		}
 	}
+	
+	private void parseCR(){
+		int c =  0 ;
+		for(int i=0;i<source.size();i++){
+			c = source.get(i);
+			if(c=='\r'){
+				if(source.get(i+1)=='\n'){
+					ld.strSe = "\r\n";
+				}else{
+					ld.strSe = "\r";
+				}
+				break;
+			}else if(c=='\n'){
+				if(source.get(i+1)=='\r'){
+					ld.strSe = "\n\r";
+				}else{
+					ld.strSe = "\n";
+				}
+				break;
+			}
+			continue;
+		}
+		if(ld.strSe!=null){
+			ld.se = ld.strSe.toCharArray();
+		}else{
+			ld.strSe = "\n";
+			ld.se = ld.strSe.toCharArray();
+		}
+	}
 
 	public BeetlToken nextToken() {
 		switch (state.model) {
@@ -172,9 +203,9 @@ public class BeetlLexer {
 			return t ;
 		}
 			
-		case LexerState.COMMENT_MODEL:{
-			return commentModel();
-		}
+//		case LexerState.COMMENT_MODEL:{
+//			return commentModel();
+//		}
 		case LexerState.ST_MODEL:{
 			BeetlToken  t =  statementModel();
 			
@@ -190,21 +221,21 @@ public class BeetlLexer {
 		return null;
 	}
 	
-	private BeetlToken commentModel(){
-		String template = source.template;
-		BeetlTextToken token = new BeetlTextToken();
-		token.col = 0;
-		token.start =0;		
-		token.end = template.length();
-		token.line = 1;
-		token.endLine = 1;
-		token.text = template;
-		token.type = MUTIPLE_LINE_COMMENT_TOKEN_TT;
-		token.channel = 1;
-		state.model = -1;
-		return token;
-		
-	}
+//	private BeetlToken commentModel(){
+//		String template = source.template;
+//		BeetlTextToken token = new BeetlTextToken();
+//		token.col = 0;
+//		token.start =0;		
+//		token.end = template.length();
+//		token.line = 1;
+//		token.endLine = 1;
+//		token.text = template;
+//		token.type = MUTIPLE_LINE_COMMENT_TOKEN_TT;
+//		token.channel = 1;
+//		state.model = -1;
+//		return token;
+//		
+//	}
 
 	private BeetlToken statementModel() {
 		int c;
@@ -915,23 +946,7 @@ public class BeetlLexer {
 			//其他字符就继续了
 		}
 		
-		if(c==source.EOF){
-			//复原
-			source.seek(start);
-			state.line = line;
-			state.col = col;
-			//一个错误的token
-			BeetlTextToken token = new BeetlTextToken();
-			token.col = col;
-			token.start = start-2;
-			token.end = source.pos();
-			token.line = line;
-			token.endLine = state.line;
-			token.text = source.getRange(token.start, source.pos());
-			token.type = ERROR_TT;
-			token.channel = 1;
-			return token;
-		}else{
+		
 			BeetlTextToken token = new BeetlTextToken();
 			token.col = col;
 			token.start = start-2;
@@ -942,7 +957,7 @@ public class BeetlLexer {
 			token.type = MUTIPLE_LINE_COMMENT_TOKEN_TT;
 			token.channel = 1;
 			return token;
-		}
+		
 
 		
 	}
@@ -980,10 +995,10 @@ public class BeetlLexer {
 
 	public static void main(String[] args) {
 		System.err.println(tokens.length);
-		String template = "<% // aa \n/*ab %> \nbbcc<% c */\n"
+		String template = "@var a=1 \n tttt"
 				+ "%>";
 		Source source = new Source(template);
-		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
+		LexerDelimiter ld = new LexerDelimiter("${", "}", "@", "\n");
 
 		BeetlLexer lexer = new BeetlLexer(source, ld);
 		BeetlToken token = null;// lexer.nextToken();

@@ -92,5 +92,8 @@ public class Source {
 	public void setState(LexerState state) {
 		this.state = state;
 	}
+	public int size(){
+		return this.cs.length;
+	}
 
 }

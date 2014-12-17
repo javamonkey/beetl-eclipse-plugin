@@ -2,7 +2,7 @@ package org.beetl.core.parser;
 
 public class LexerState {
 	/*0:静态文本 1 占位符 2 语句 3 注释*/
-	public int model = 0;	
+	public int model = -1;	
 	public int line = 1;
 	public int col = 1;
 	
