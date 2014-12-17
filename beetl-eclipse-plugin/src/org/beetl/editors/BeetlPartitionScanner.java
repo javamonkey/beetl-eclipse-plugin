@@ -33,6 +33,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	int length = 0;
 	BeetlToken lastToken = new BeetlToken();;
 	BeetlToken commToken = null;;
+	int index = 0;
 	
 	
 	BeetlEclipseEditor editor = null;
@@ -51,55 +52,80 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	@Override
 	public IToken nextToken() {
-
-		BeetlToken token = null;
-		while ((token = lexer.nextToken()) != null) {
-			if (token.getType() == BeetlLexer.TEXT_TT) {
-				offset = token.start;
-				length = token.end - token.start;
-				this.lastToken = token;
-			
-				return TextToken;
-			} else if (token.getType() == BeetlLexer.ST_SS_TT) {
-				offset = token.start;
-				length = this.ld.strSs.length();
-				while ((token = lexer.nextToken()) != null) {
-					length = token.end - lastToken.end;
-					if (token.getType() == BeetlLexer.ST_SE_TT) {
-						break;
-					}
-				}
-
-				this.lastToken = token;
-				
-				return StatementToken;
-			} else if (token.getType() == BeetlLexer.PH_SS_TT) {
-				offset = token.start;
-				length = this.ld.strPs.length();
-				while ((token = lexer.nextToken()) != null) {
-					length = token.end - lastToken.end;
-					if (token.getType() == BeetlLexer.PH_SE_TT) {
-						break;
-					}
-				}
-				
-				
-				this.lastToken = token;
-				
-				return this.HolderToken;
-
-			} else {
-				return TextToken;
-			}
-
+		if(commToken!=null){
+			offset = commToken.start;
+			length = commToken.end - commToken.start;
+			this.lastToken = commToken;
+			commToken  = null;
+			debug(CommentToken);
+			return  CommentToken;
 		}
-		return Token.EOF;
+		BeetlToken token = lexer.nextToken();
+		if(token == null) return Token.EOF;
+		
+		if (lexer.state.model==LexerState.ST_MODEL) {
+			offset = token.start;
+			length = this.ld.strSs.length();
+			while ((token = lexer.nextToken()) != null) {
+				
+				if (token.getType() == BeetlLexer.ST_SE_TT) {
+					length = token.end - lastToken.end;
+					break;
+				}else if(token.getType()==BeetlLexer.MUTIPLE_LINE_COMMENT_TOKEN_TT){
+					commToken = token;
+					break ;
+				}else{
+					length = token.end - lastToken.end;
+					
+				}
+			}
+			this.lastToken = token;		
+			debug(StatementToken);
+			return StatementToken;
+		} else if (lexer.state.model==LexerState.PH_MODEL) {
+			offset = token.start;
+			length = this.ld.strPs.length();
+			while ((token = lexer.nextToken()) != null) {
+				length = token.end - lastToken.end;
+				if (token.getType() == BeetlLexer.PH_SE_TT) {
+					break;
+				}
+			}
+			
+			
+			this.lastToken = token;
+			debug(HolderToken);
+			return this.HolderToken;
+
+		} else if (lexer.state.model==LexerState.STATIC_MODEL) {
+			offset = token.start;
+			length = token.end - token.start;
+			this.lastToken = token;	
+			debug(TextToken);
+			return TextToken;
+		} else {
+			offset = token.start;
+			length = token.end - token.start;
+			this.lastToken = token;	
+			debug(TextToken);
+			return TextToken;
+		}
+		
+		
+		
+		
 
 	}
 
+
 	private void debug(Token t) {
-//		System.out.println("offset=" + (this.offset + this.partionOffset)
-//				+ " len=" + this.length + " type=" + t.getData());
+		if(index==0){
+			System.out.println("==================");
+		}
+		
+		System.out.println(++index+":offset=" + (this.offset + this.partionOffset)
+				+ " len=" + this.length + " type=" + t.getData()+" contentType="+contentType);		
+		System.out.println();
 	}
 
 	@Override

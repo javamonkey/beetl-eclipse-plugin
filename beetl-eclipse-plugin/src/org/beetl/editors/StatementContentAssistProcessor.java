@@ -51,12 +51,6 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 	
 	private List<String> getString(BeetlTokenSource source,String id,int offset){
 		List<String> list = new ArrayList<String>();
-		//检测关键字
-		if("if".indexOf(id)!=-1){
-			list.add("if");
-		}else if("var".indexOf(id)!=-1){
-			list.add("var");
-		}
 		
 		//检测之前的变量
 		List<BeetlToken> tokens = source.tokens;
@@ -66,6 +60,13 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 				if(t.getText().indexOf(id)!=-1){
 					list.add(t.getText());
 				}
+			}
+		}
+		
+		//检测关键字
+		for (String keyWord : BeetlLexer.tokens) {
+			if(keyWord.indexOf(id) != -1){
+				list.add(keyWord);
 			}
 		}
 		return list;
