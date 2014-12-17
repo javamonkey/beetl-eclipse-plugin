@@ -13,11 +13,14 @@ package org.beetl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.beetl.editors.BeetlEclipseEditor;
+import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.IDocument;
@@ -34,6 +37,7 @@ import org.eclipse.jface.text.TypedPosition;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * A standard implementation of a document partitioner. It uses an
@@ -98,7 +102,7 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 	private Position[] fCachedPositions = null;
 	/** Debug option for cache consistency checking. */
 	private static final boolean CHECK_CACHE_CONSISTENCY = "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.jface.text/debug/FastPartitioner/PositionCache")); //$NON-NLS-1$//$NON-NLS-2$;
-
+	BeetlEclipseEditor editor;
 	/**
 	 * Creates a new partitioner that uses the given scanner and may return
 	 * partitions of the given legal content types.
@@ -108,12 +112,13 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 	 * @param legalContentTypes
 	 *            the legal content types of this partitioner
 	 */
-	public MyFastPartitioner(IPartitionTokenScanner scanner,
+	public MyFastPartitioner(BeetlEclipseEditor editor,IPartitionTokenScanner scanner,
 			String[] legalContentTypes) {
 		fScanner = scanner;
 		fLegalContentTypes = TextUtilities.copy(legalContentTypes);
 		fPositionCategory = CONTENT_TYPES_CATEGORY + hashCode();
 		fPositionUpdater = new DefaultPositionUpdater(fPositionCategory);
+		this.editor = editor;
 	}
 
 	/*
@@ -190,7 +195,13 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 		} catch (BadPositionCategoryException x) {
 			// cannot happen if document has been connected before
 		}
+		
+	
+		
+		
 	}
+	
+	
 
 	/**
 	 * {@inheritDoc}
@@ -310,6 +321,8 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			Assert.isTrue(e.getDocument() == fDocument);
 
 			Position[] category = getPositions();
+			TypedPosition partition1 = this.findClosestPosition(e.getOffset());
+		
 			IRegion line = fDocument.getLineInformationOfOffset(e.getOffset());
 			int reparseStart = line.getOffset();
 			int partitionStart = -1;
@@ -319,6 +332,7 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			int first = fDocument.computeIndexInCategory(fPositionCategory,
 					reparseStart);
 			if (first > 0) {
+				
 				TypedPosition partition = (TypedPosition) category[first - 1];
 				if (partition.includes(reparseStart)) {
 					partitionStart = partition.getOffset();
@@ -428,6 +442,15 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 				fDocument.removePosition(fPositionCategory, p);
 				rememberRegion(p.offset, p.length);
 			}
+			
+			Display.getDefault().asyncExec(new Runnable() {
+                public void run() {
+                	ProjectUtil.foldingDocument(editor, (Document)fDocument);
+                }
+
+			});
+			
+			
 
 		} catch (BadPositionCategoryException x) {
 			// should never happen on connected documents

@@ -24,6 +24,9 @@ public class ColorToken {
 	public static Token string = new Token(new TextAttribute(ColorManager.instance()
 			.getColor(SyntaxColorConstants.STRING)));
 	
+	public static Token comment = new Token(new TextAttribute(ColorManager.instance()
+			.getColor(SyntaxColorConstants.COMMENT)));
+	
 	public static Token getColorTokenByType(int type){
 		
 		switch(type){
@@ -54,6 +57,10 @@ public class ColorToken {
 			case BeetlLexer.PH_SE_TT: 
 			case BeetlLexer.PH_SS_TT: return ph;
 			case BeetlLexer.ERROR_TT:return error;
+			case BeetlLexer.SINGLE_LINE_COMMENT_TOKEN_TT:
+			case BeetlLexer.MUTIPLE_LINE_COMMENT_TOKEN_TT: return  comment;
+					
+			
 			default:return defaultToken;
 		}
 					

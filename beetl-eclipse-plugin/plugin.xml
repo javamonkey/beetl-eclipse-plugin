@@ -53,14 +53,14 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.beetl.editor.handler.EditorToggleHandler"
+            class="org.beetl.editors.handler.EditorToggleHandler"
             commandId="beetl-eclipse-plugin.command.editorToggleCommand">
       </handler>
    </extension>
      <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.beetl.editor.handler.NextStatHandler"
+            class="org.beetl.editors.handler.NextStatHandler"
             commandId="beetl-eclipse-plugin.command.nextStatCommand">
       </handler>
       
@@ -69,7 +69,7 @@
     <extension
          point="org.eclipse.ui.handlers">
      <handler
-            class="org.beetl.editor.handler.PreStatHandler"
+            class="org.beetl.editors.handler.PreStatHandler"
             commandId="beetl-eclipse-plugin.command.preStatCommand" >
            
       </handler>
@@ -78,7 +78,7 @@
      <extension
          point="org.eclipse.ui.handlers">
      <handler
-            class="org.beetl.editor.handler.AnotherPairHandler"
+            class="org.beetl.editors.handler.AnotherPairHandler"
             commandId="beetl-eclipse-plugin.command.anotherPairCommand" >           
       </handler>
    </extension>
@@ -86,7 +86,7 @@
     <extension
          point="org.eclipse.ui.handlers">
      <handler
-            class="org.beetl.editor.handler.FoldingHandler"
+            class="org.beetl.editors.handler.FoldingHandler"
             commandId="beetl-eclipse-plugin.command.editorFoldingCommand" >           
       </handler>
    </extension>

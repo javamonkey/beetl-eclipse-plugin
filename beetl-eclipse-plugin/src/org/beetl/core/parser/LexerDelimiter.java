@@ -21,6 +21,9 @@ public class LexerDelimiter {
 		this.strPe = strPe;
 		this.strSs = strSs;
 		this.strSe = strSe;
+		if(strSe==null){
+			strSe= "";
+		}
 		this.ps = strPs.toCharArray();
 		this.pe = strPe.toCharArray();
 		this.ss = strSs.toCharArray();

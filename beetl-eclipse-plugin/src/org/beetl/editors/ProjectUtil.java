@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.beetl.core.parser.BeetlLexer;
+import org.beetl.core.parser.BeetlTextToken;
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -15,9 +17,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -147,6 +153,90 @@ public class ProjectUtil {
 		}
 		
 	
+	}
+	
+	public static  void unfolding(BeetlEclipseEditor editor,Document document){
+		editor.getAnnotationModel().expandAll(0, document.getLength());
+	}
+	public static  void folding(BeetlEclipseEditor editor,Document document){
+		editor.getAnnotationModel().collapseAll(0, document.getLength());
+	}
+	
+	
+	public static  void foldingDocument(BeetlEclipseEditor editor,Document document){
+		
+		 String content = document.get();
+		 BeetlTokenSource s = new BeetlTokenSource(null);
+		 s.parse(content);
+		
+		 ProjectionViewer viewer = (ProjectionViewer)
+		            editor.getAdapter(ITextOperationTarget.class);	
+		 
+		 List<BeetlToken> tokens = s.getTokens();
+		 List<Position> posList = new ArrayList<Position>();
+		 for(int i=0;i<tokens.size();i++){
+			 BeetlToken token = tokens.get(i);
+			 if(token.type == BeetlLexer.TEXT_TT){
+				 BeetlTextToken t = (BeetlTextToken)token;
+				 int startLine = t.line;
+				 int endLine = t.endLine;
+				 if(i!=0){
+					 BeetlToken pre = tokens.get(i-1);
+					 if(pre.line==t.line){
+						 if(t.endLine>t.line){
+							 //从下一行开始
+							 startLine++;
+						 }else{
+							 //同一行，不折叠
+							 continue ;
+						 }
+						
+					 }
+				 }
+				 
+				 if(i<tokens.size()-1){
+					 BeetlToken next = tokens.get(i+1);
+					 if(next.getCol()!=1){
+						 
+						 if(t.endLine>t.line){
+							 endLine--;
+						 }else{
+							 //同一行，不折叠
+							 continue;
+						 }
+						
+					 }
+				 }
+					 
+					 
+				if(startLine<endLine){
+					//如果有多行，可以折叠
+					 try {
+						 //同eclipse编辑器统一
+						int start = document.getLineOffset(startLine-1);
+						IRegion r = (IRegion)document.getLineInformation(endLine-1);
+						String cr = document.getLineDelimiter(endLine-1);
+						
+						 int len = r.getOffset()-start+r.getLength()+(cr!=null?cr.length():0);
+						 Position  pos = new Position(start,len);
+						 posList.add(pos);
+					} catch (BadLocationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}else{
+					continue;
+				}
+				
+				
+			 }
+		 }
+		 
+		 editor.updateFoldingStructure(posList);
+		// editor.getAnnotationModel().collapseAll(start,end);
+		
+		 
 	}
 	
 	

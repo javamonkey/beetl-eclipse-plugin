@@ -16,11 +16,11 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
-			IDocumentPartitioner partitioner = new MyFastPartitioner(
+			IDocumentPartitioner partitioner = new MyFastPartitioner(editor,
 					new BeetlPartitionScanner(editor), new String[] {
 							BeetlPartitionScanner.PLACE_HOLDER_PART,
 							BeetlPartitionScanner.STATIC_TEXT_PART,
-							BeetlPartitionScanner.STATEMENT_PART ,BeetlPartitionScanner.COMMENT_PART});
+							BeetlPartitionScanner.STATEMENT_PART /*,BeetlPartitionScanner.COMMENT_PART*/});
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 		}

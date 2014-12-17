@@ -15,12 +15,12 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	public static String PLACE_HOLDER_PART = "PLACE_HOLDER_PART";
 	public static String STATEMENT_PART = "STATEMENT_PART";
 	public static String STATIC_TEXT_PART = "STATIC_TEXT_PART";
-	public static String COMMENT_PART = "COMMENT_TEXT_PART";
+	//public static String COMMENT_PART = "COMMENT_TEXT_PART";
 
 	static Token HolderToken = new Token(PLACE_HOLDER_PART);
 	static Token TextToken = new Token(STATIC_TEXT_PART);
 	static Token StatementToken = new Token(STATEMENT_PART);
-	static Token CommentToken = new Token(COMMENT_PART);
+	//static Token CommentToken = new Token(COMMENT_PART);
 
 	Source source = null;
 	LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
