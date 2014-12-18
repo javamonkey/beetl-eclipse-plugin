@@ -8,6 +8,7 @@ import org.beetl.editors.ProjectUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -46,7 +47,8 @@ public class PreStatHandler extends AbstractHandler {
 		 
 		BeetlToken token = s.findPreStOrHolder(offset);
 		if(token==null){
-			Toolkit.getDefaultToolkit().beep();
+			//Toolkit.getDefaultToolkit().beep();
+			Display.getDefault().beep();
 			return null;
 		}
 		int newOffset = token.end;

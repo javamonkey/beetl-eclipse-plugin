@@ -27,6 +27,10 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 		if (BeetlLexer.contains(selction.getText())) {
 			return;
 		}
+		
+		if(selction.getText().contains("\r")||selction.getText().contains("\n")){
+			return ;
+		}
 	
 		int offset = selction.getOffset();
 		int len = selction.getLength();

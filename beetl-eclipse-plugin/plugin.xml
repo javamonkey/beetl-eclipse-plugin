@@ -158,6 +158,20 @@
             parentId="org.eclipse.ui.textEditorScope">
       </context>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.beetl.preferences.PreferencePage"
+            id="org.beetl.preferences.PreferencePage"
+            name="Beetl">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.beetl.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
    
   
    

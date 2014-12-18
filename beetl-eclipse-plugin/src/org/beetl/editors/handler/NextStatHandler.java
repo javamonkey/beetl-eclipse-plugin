@@ -12,6 +12,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -43,7 +44,8 @@ public class NextStatHandler extends AbstractHandler {
 		 
 		BeetlToken token = s.findNextStOrHolder(offset);
 		if(token==null){
-			Toolkit.getDefaultToolkit().beep();
+			//Toolkit.getDefaultToolkit().beep();
+			Display.getDefault().beep();
 			return null;
 		}
 		int newOffset = token.end;
