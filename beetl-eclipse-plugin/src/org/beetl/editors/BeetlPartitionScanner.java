@@ -23,7 +23,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	static Token CommentToken = new Token(COMMENT_PART);
 
 	Source source = null;
-	LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
+	LexerDelimiter ld = null;
 	BeetlLexer lexer = null;
 	int i = 0;
 	String contentType = null;
@@ -119,6 +119,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 
 	private void debug(Token t) {
+		/*
 		if(index==0){
 			System.out.println("==================");
 		}
@@ -126,6 +127,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		System.out.println(++index+":offset=" + (this.offset + this.partionOffset)
 				+ " len=" + this.length + " type=" + t.getData()+" contentType="+contentType);		
 		System.out.println();
+		*/
 	}
 
 	@Override
@@ -133,7 +135,10 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		String text = document.get();
 		content = text.substring(arg1, arg1 + arg2);
 		source = new Source(content);
-		
+		if(ld==null){
+			String[] de = ProjectUtil.delimter;
+			ld =  new LexerDelimiter(de[2], de[3], de[0], de[1]);
+		}
 		lexer = new BeetlLexer(source, ld);
 		lastToken = new BeetlToken();
 		this.length =0 ;

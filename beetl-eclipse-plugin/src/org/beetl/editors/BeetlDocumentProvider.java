@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.eclipse.ui.part.FileEditorInput;
 
 public class BeetlDocumentProvider extends FileDocumentProvider {
 	
@@ -14,6 +15,8 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 	}
 
 	protected IDocument createDocument(Object element) throws CoreException {
+		FileEditorInput file = (FileEditorInput)element;		
+		ProjectUtil.initProject(file.getFile());
 		IDocument document = super.createDocument(element);
 		if (document != null) {
 			IDocumentPartitioner partitioner = new MyFastPartitioner(editor,

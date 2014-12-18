@@ -67,7 +67,7 @@ public class EditorToggleHandler extends AbstractHandler {
 				 
 			 }else{
 					String oldEditorId = wbPage.getActiveEditor().getEditorSite().getId();
-					System.out.println("open  beetl editor:"+oldEditor.getEditorInput());
+//					System.out.println("open  beetl editor:"+oldEditor.getEditorInput());
 					BeetlEclipseEditor beetlEditor = (BeetlEclipseEditor) wbPage.openEditor((IEditorInput)oldEditor.getEditorInput(), editorId, true, IWorkbenchPage.MATCH_ID|IWorkbenchPage.MATCH_INPUT);
 					beetlEditor.setOldEditorId(oldEditorId);
 					newEditor = beetlEditor;

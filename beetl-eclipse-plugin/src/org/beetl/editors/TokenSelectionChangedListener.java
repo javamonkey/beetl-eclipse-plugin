@@ -22,7 +22,7 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 		// TODO Auto-generated method stub
 		TextSelection selction = (TextSelection)event.getSelection() ;
 		
-		System.out.println(selction.getText());
+//		System.out.println(selction.getText());
 		
 		if (BeetlLexer.contains(selction.getText())) {
 			return;
@@ -41,11 +41,10 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 			reset(st);
 			return ;
 		}
-		System.out.println("offset="+offset+":len="+len);
 		reset(st);
 		String text = view.getDocument().get();
-		BeetlTokenSource source = new BeetlTokenSource(null);
-		source.parse(text);
+		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text, null);
+	
 		Object[] info = source.find(offset+1);
 		if(info==null)return ;
 		BeetlToken t = (BeetlToken)info[0];

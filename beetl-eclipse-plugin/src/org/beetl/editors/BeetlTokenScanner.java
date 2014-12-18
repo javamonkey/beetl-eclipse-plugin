@@ -53,10 +53,10 @@ public class BeetlTokenScanner implements ITokenScanner {
 	public void setRange(IDocument arg0, int arg1, int arg2) {
 		String text = arg0.get();
 		String content = text.substring(arg1, arg1 + arg2);
-		offset = arg1;
-		source = new BeetlTokenSource(this.type);
-		source.parse(content);
-    	System.out.println("scan part: type="+type + "content="+content);
+		offset = arg1;		
+		source = ProjectUtil.getBeetlTokenSource(content, this.type);	
+		
+//    	System.out.println("scan part: type="+type + "content="+content);
 		it = source.tokens.iterator();
 //		System.out.println("tokens:" + source.tokens);
 	}

@@ -17,6 +17,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class BeetlEclipseEditor extends TextEditor {
@@ -58,6 +59,8 @@ public class BeetlEclipseEditor extends TextEditor {
 
 	protected ISourceViewer createSourceViewer(Composite parent,
 			IVerticalRuler ruler, int styles) {
+				
+		
 		ISourceViewer viewer = new ProjectionViewer(parent, ruler,
 				getOverviewRuler(), isOverviewRulerVisible(), styles);
 

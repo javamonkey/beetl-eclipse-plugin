@@ -30,15 +30,16 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 		
 	
 		String content = source.getDocument().get();
-		BeetlTokenSource s = new BeetlTokenSource(null);
-		s.parse(content);
+		
+		BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);	
+		
 		Object[] result = s.find(region.getOffset());
 		if(result==null) return null;
 		BeetlToken token = (BeetlToken)result[0];
 		if(token.getType()==BeetlLexer.STRING_TT){
 			
 			IPath root = ProjectUtil.getProjectTemplateRoot(file);
-			System.out.println("root:"+root.toOSString());
+//			System.out.println("root:"+root.toOSString());
 			if(root==null) return null;
 			
 			String path = token.text.substring(1,token.text.length()-1);
@@ -54,7 +55,7 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 			
 			}
 			//正则判断是否以.xxx结尾
-			System.out.println("targetFile:"+targetFile.getLocationURI());
+//			System.out.println("targetFile:"+targetFile.getLocationURI());
 			
 		
 			Region newRegion = new Region(token.start+1,path.length());

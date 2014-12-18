@@ -158,23 +158,26 @@
             parentId="org.eclipse.ui.textEditorScope">
       </context>
    </extension>
+   
+   
+   
+   
    <extension
-         point="org.eclipse.ui.preferencePages">
+         point="org.eclipse.ui.propertyPages">
       <page
-            class="org.beetl.preferences.PreferencePage"
-            id="org.beetl.preferences.PreferencePage"
+            class="org.beetl.editors.property.BeetlPropertyPage"
+            id="org.beetl.editors.property.BeetlPropertyPage"
             name="Beetl">
+            <enabledWhen>
+            	<adapt
+                   type="org.eclipse.jdt.internal.core.JavaProject">
+            	</adapt>
+            </enabledWhen>
       </page>
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.beetl.preferences.PreferenceInitializer">
-      </initializer>
+    
    </extension>
    
-  
-   
+
    
 
 </plugin>

@@ -1,33 +1,38 @@
 package org.beetl.editors;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.beetl.activator.BeetlActivator;
-import org.beetl.preferences.PreferenceConstants;
-import java.util.Map;
+import java.util.Properties;
 
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlTextToken;
 import org.beetl.core.parser.BeetlToken;
+import org.beetl.core.parser.LexerDelimiter;
+import org.beetl.editors.property.BeetlPropertyPage;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -40,9 +45,20 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class ProjectUtil {
 	
 	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
-	
+	public static String[] delimter = null;
 	// 每个工程模板的跟目录
 	//static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
+	
+	
+	
+	public static BeetlTokenSource getBeetlTokenSource(String str,String type){
+		LexerDelimiter ld = new LexerDelimiter(delimter[2], delimter[3], delimter[0], delimter[1]);
+		BeetlTokenSource source = new BeetlTokenSource(type);
+		
+		source.ld = ld;
+		source.parse(str);
+		return source;
+	}
 	
 	/** 切换编辑器
 	 * @param event
@@ -130,13 +146,27 @@ public class ProjectUtil {
 		}
 	}
 	
+	public static void initProject(IFile file){
+		if(delimter!=null) return ;
+		String filePath = getProjectBeetlConfig(file);
+		delimter = getBasicConfig(filePath);
+	}
+	
+	
+	
 	
 	public static IPath getProjectTemplateRoot(IFile file){
 		IProject project = file.getProject();
-		
-		IPreferenceStore store = BeetlActivator.getDefault().getPreferenceStore();
-		String templdatePath = store.getString(PreferenceConstants.P_STRING);
-		System.out.println("templdatePath: "+templdatePath);
+		QualifiedName indexName = new QualifiedName("", BeetlPropertyPage.OWNER_PROPERTY);
+		String templdatePath;
+		try {
+			templdatePath = project.getPersistentProperty(indexName);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+//		System.out.println("templdatePath: "+templdatePath);
 		IPath path = null;
 		//IPath path = webRoot.get(project);
 		if(templdatePath==null || "".equals(templdatePath)){
@@ -148,10 +178,14 @@ public class ProjectUtil {
 			if (dialog.open() == Window.OK) {
 				Object[] result = dialog.getResult();
 				if (result.length == 1) {
-					path = (IPath) result[0];
-					store.setValue(PreferenceConstants.P_STRING, path.toOSString());
-					//webRoot.put(project, path);
-					
+					path = (IPath) result[0];					
+					try {
+						project.setPersistentProperty(indexName,path.toOSString());
+					} catch (CoreException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						return null;
+					}
 					
 					return path;
 				}
@@ -177,8 +211,7 @@ public class ProjectUtil {
 	public static  void foldingDocument(BeetlEclipseEditor editor,Document document){
 		
 		 String content = document.get();
-		 BeetlTokenSource s = new BeetlTokenSource(null);
-		 s.parse(content);
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);	
 		
 		 ProjectionViewer viewer = (ProjectionViewer)
 		            editor.getAdapter(ITextOperationTarget.class);	
@@ -248,6 +281,37 @@ public class ProjectUtil {
 		// editor.getAnnotationModel().collapseAll(start,end);
 		
 		 
+	}
+	
+	public static String[] getBasicConfig(String configPath){
+		File file = new File(configPath);
+		if(!file.exists()){
+			//目前返回默认
+			return new String[]{"<%","%>","${",""};
+		}
+		Properties ps = new Properties();
+		try {
+			ps.load(new FileInputStream(configPath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new String[]{"<%","%>","${",""};
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return new String[]{"<%","%>","${",""};
+		}
+		
+		String ds = ps.getProperty("DELIMITER_STATEMENT_START","<%");
+		String de = ps.getProperty("DELIMITER_STATEMENT_END","%>");
+		if(de==null||de.length()==0||de.equalsIgnoreCase("null")){
+			de = null;
+		}
+		String pls = ps.getProperty("DELIMITER_PLACEHOLDER_START","${");
+		String ple = ps.getProperty("DELIMITER_PLACEHOLDER_END","}");
+		
+		
+		return new String[]{ds,de,pls,ple};
+		
 	}
 	
 	
