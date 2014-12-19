@@ -38,7 +38,7 @@ public class BeetlCharacterPairMatcher implements ICharacterPairMatcher {
 	@Override
 	public IRegion match(IDocument doc, int offset) {
 		String text = doc.get();
-		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text, null);	
+		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text, null,doc);	
 		Object[] info = source.find(offset);
 		if(info==null) return null;
 		BeetlToken t = (BeetlToken)info[0];

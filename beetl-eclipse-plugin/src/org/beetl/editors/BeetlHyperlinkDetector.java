@@ -31,7 +31,7 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 	
 		String content = source.getDocument().get();
 		
-		BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);	
+		BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,source.getDocument());	
 		
 		Object[] result = s.find(region.getOffset());
 		if(result==null) return null;

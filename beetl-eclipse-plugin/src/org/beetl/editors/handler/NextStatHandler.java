@@ -35,7 +35,7 @@ public class NextStatHandler extends AbstractHandler {
 		BeetlEclipseEditor editor = (BeetlEclipseEditor) ProjectUtil.getActiveEditor(event) ;
 		 Document document = ProjectUtil.getDocument(editor);
 		 String content = document.get();
-		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,document);
 		
 		ProjectionViewer viewer = (ProjectionViewer)
 		            editor.getAdapter(ITextOperationTarget.class);			 

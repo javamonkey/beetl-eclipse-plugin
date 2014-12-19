@@ -1,13 +1,9 @@
 package org.beetl.editors;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
+import org.beetl.MyDocument;
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlTextToken;
 import org.beetl.core.parser.BeetlToken;
@@ -16,17 +12,15 @@ import org.beetl.editors.property.BeetlPropertyPage;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.jdt.internal.core.JavaModelManager;
-import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.Position;
@@ -45,13 +39,14 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class ProjectUtil {
 	
 	public static String editorId = "org.beetl.editors.BeetlEclipseEditor";
-	public static String[] delimter = null;
+//	public static String[] delimter = null;
 	// 每个工程模板的跟目录
 	//static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
 	
+	public static String line = System.getProperty("line.separator");
 	
-	
-	public static BeetlTokenSource getBeetlTokenSource(String str,String type){
+	public static BeetlTokenSource getBeetlTokenSource(String str,String type,IDocument doc){
+		String[] delimter = ((MyDocument)doc).delimter;
 		LexerDelimiter ld = new LexerDelimiter(delimter[2], delimter[3], delimter[0], delimter[1]);
 		BeetlTokenSource source = new BeetlTokenSource(type);
 		
@@ -129,29 +124,93 @@ public class ProjectUtil {
 
 	}
 	
-	public static String getProjectBeetlConfig(IFile file){
-		JavaProject project = (JavaProject)JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(file);
-		
+//	public static String getProjectBeetlConfig(IFile file){
+//		JavaProject project = (JavaProject)JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(file);
+//		
+//		try {
+//			IPath outputPath = project.getOutputLocation();
+//			IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(outputPath);
+//			IFile f = outputFolder.getFile("beetl.properties");
+//			String tt = f.getLocation().toOSString();
+//			return tt;
+//			
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//	
+//	public static String[] getProjectDelimter() {
+//		String[] str = new String[4];
+//		IWorkbenchPage wbPage = PlatformUI.getWorkbench()
+//				.getActiveWorkbenchWindow().getActivePage();
+//		IEditorInput input = wbPage.getActiveEditor().getEditorInput();
+//		IFile file = getInputFile(input);
+//		IProject project = file.getProject();
+//		QualifiedName qname = new QualifiedName("", BeetlPropertyPage.ST_START);
+//		try {
+//			str[0] = project.getPersistentProperty(qname);
+//			qname = new QualifiedName("", BeetlPropertyPage.ST_END);
+//			str[1] = project.getPersistentProperty(qname);
+//			qname = new QualifiedName("", BeetlPropertyPage.PL_START);
+//			str[2] = project.getPersistentProperty(qname);
+//			qname = new QualifiedName("", BeetlPropertyPage.PL_END);
+//			str[3] = project.getPersistentProperty(qname);
+//		} catch (CoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return new String[] { "<%", "%>", "$", "}" };
+//		}
+//
+//		return str;
+//	}
+	
+	public static String[] getProjectDelimter(BeetlEclipseEditor editor) {
+		String[] str = new String[4];
+		IEditorInput input = editor.getEditorInput();
+		IFile file = getInputFile(input);
+		IProject project = file.getProject();
+		QualifiedName qname = new QualifiedName("", BeetlPropertyPage.ST_START);
 		try {
-			IPath outputPath = project.getOutputLocation();
-			IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(outputPath);
-			IFile f = outputFolder.getFile("beetl.properties");
-			String tt = f.getLocation().toOSString();
-			return tt;
+			str[0] = project.getPersistentProperty(qname);
+			if(str[0]==null||str[0].length()==0){
+				str[0] = "<%";
+			}
+			qname = new QualifiedName("", BeetlPropertyPage.ST_END);			
+			str[1] = project.getPersistentProperty(qname);
+			if(str[1]==null||str[1].length()==0){
+				str[1] = "%>";
+			}
 			
-		} catch (Exception e) {
+			if(str[1].indexOf("\r")!=-1||str[1].indexOf("\n")!=-1){
+				str[1] = line;
+			}
+			qname = new QualifiedName("", BeetlPropertyPage.PL_START);
+			str[2] = project.getPersistentProperty(qname);
+			if(str[2]==null||str[2].length()==1){
+				str[2] = "${";
+			}
+			qname = new QualifiedName("", BeetlPropertyPage.PL_END);
+			str[3] = project.getPersistentProperty(qname);
+			if(str[3]==null||str[3].length()==1){
+				str[3] = "}";
+			}
+		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return new String[] { "<%", "%>", "$", "}" };
 		}
+
+		return str;
 	}
 	
-	public static void initProject(IFile file){
-		if(delimter!=null) return ;
-		String filePath = getProjectBeetlConfig(file);
-		delimter = getBasicConfig(filePath);
-	}
-	
+//	public static void initProject(IFile file){
+//		if(delimter!=null) return ;
+//		String filePath = getProjectBeetlConfig(file);
+//		delimter = getBasicConfig(filePath);
+//	}
+//	
 	
 	
 	
@@ -211,7 +270,7 @@ public class ProjectUtil {
 	public static  void foldingDocument(BeetlEclipseEditor editor,Document document){
 		
 		 String content = document.get();
-		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);	
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,document);	
 		
 		 ProjectionViewer viewer = (ProjectionViewer)
 		            editor.getAdapter(ITextOperationTarget.class);	
@@ -283,36 +342,37 @@ public class ProjectUtil {
 		 
 	}
 	
-	public static String[] getBasicConfig(String configPath){
-		File file = new File(configPath);
-		if(!file.exists()){
-			//目前返回默认
-			return new String[]{"<%","%>","${",""};
-		}
-		Properties ps = new Properties();
-		try {
-			ps.load(new FileInputStream(configPath));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new String[]{"<%","%>","${",""};
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			return new String[]{"<%","%>","${",""};
-		}
-		
-		String ds = ps.getProperty("DELIMITER_STATEMENT_START","<%");
-		String de = ps.getProperty("DELIMITER_STATEMENT_END","%>");
-		if(de==null||de.length()==0||de.equalsIgnoreCase("null")){
-			de = null;
-		}
-		String pls = ps.getProperty("DELIMITER_PLACEHOLDER_START","${");
-		String ple = ps.getProperty("DELIMITER_PLACEHOLDER_END","}");
-		
-		
-		return new String[]{ds,de,pls,ple};
-		
-	}
+	
+//	public static String[] getBasicConfig(String configPath){
+//		File file = new File(configPath);
+//		if(!file.exists()){
+//			//目前返回默认
+//			return new String[]{"<%","%>","${",""};
+//		}
+//		Properties ps = new Properties();
+//		try {
+//			ps.load(new FileInputStream(configPath));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return new String[]{"<%","%>","${",""};
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			return new String[]{"<%","%>","${",""};
+//		}
+//		
+//		String ds = ps.getProperty("DELIMITER_STATEMENT_START","<%");
+//		String de = ps.getProperty("DELIMITER_STATEMENT_END","%>");
+//		if(de==null||de.length()==0||de.equalsIgnoreCase("null")){
+//			de = null;
+//		}
+//		String pls = ps.getProperty("DELIMITER_PLACEHOLDER_START","${");
+//		String ple = ps.getProperty("DELIMITER_PLACEHOLDER_END","}");
+//		
+//		
+//		return new String[]{ds,de,pls,ple};
+//		
+//	}
 	
 	
 	

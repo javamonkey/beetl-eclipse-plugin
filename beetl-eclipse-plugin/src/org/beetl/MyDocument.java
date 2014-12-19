@@ -6,6 +6,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.GapTextStore;
 
 public class MyDocument extends Document {
+	public String[] delimter ;
 	public MyDocument() {
 		super();
 		

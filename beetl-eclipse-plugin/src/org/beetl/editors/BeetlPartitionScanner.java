@@ -136,14 +136,14 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		content = text.substring(arg1, arg1 + arg2);
 		source = new Source(content);
 		if(ld==null){
-			String[] de = ProjectUtil.delimter;
+			String[] de = ProjectUtil.getProjectDelimter(this.editor);
 			ld =  new LexerDelimiter(de[2], de[3], de[0], de[1]);
 		}
 		lexer = new BeetlLexer(source, ld);
 		lastToken = new BeetlToken();
 		this.length =0 ;
 		this.offset = 0;
-		System.out.println("part:" + content);
+//		System.out.println("part:" + content);
 
 	}
 

@@ -38,7 +38,7 @@ public class PreStatHandler extends AbstractHandler {
 		 ITextEditor editor =  ProjectUtil.getActiveEditor(event) ;
 		 Document document = ProjectUtil.getDocument(editor);
 		 String content = document.get();
-		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null);
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,document);
 		
 		 ISourceViewer viewer = (ISourceViewer)
 		            editor.getAdapter(ITextOperationTarget.class);			 

@@ -43,7 +43,7 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 		}
 		reset(st);
 		String text = view.getDocument().get();
-		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text, null);
+		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text,null, view.getDocument());
 	
 		Object[] info = source.find(offset+1);
 		if(info==null)return ;

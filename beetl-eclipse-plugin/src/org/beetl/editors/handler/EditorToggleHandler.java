@@ -80,9 +80,7 @@ public class EditorToggleHandler extends AbstractHandler {
 			 viewer.getTextWidget().setSelection(caretOffset);
 			 
 			 IFile file = ProjectUtil.getInputFile(oldEditor.getEditorInput());
-			 //同样文件
-			 String tt =ProjectUtil.getProjectBeetlConfig(file);
-			 
+		
 			 ITextEditor[] all = ProjectUtil.getEditors(file);
 			 EditorDocumentListener listener =EditorDocumentListener.getDocumentListener(file);
 			 //检测是否已经有同步监听了

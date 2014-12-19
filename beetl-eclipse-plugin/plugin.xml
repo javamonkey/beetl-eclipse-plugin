@@ -168,11 +168,11 @@
             class="org.beetl.editors.property.BeetlPropertyPage"
             id="org.beetl.editors.property.BeetlPropertyPage"
             name="Beetl">
-            <enabledWhen>
-            	<adapt
-                   type="org.eclipse.jdt.internal.core.JavaProject">
-            	</adapt>
-            </enabledWhen>
+              <enabledWhen>
+		     <adapt type="org.eclipse.core.resources.IProject">
+		      </adapt>         
+         </enabledWhen>
+           
       </page>
     
    </extension>

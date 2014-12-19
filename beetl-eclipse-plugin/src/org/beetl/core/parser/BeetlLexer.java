@@ -144,7 +144,7 @@ public class BeetlLexer {
 		}else{
 			state.model = model;
 		}
-		if(ld.strSe==null){
+		if(ld.strSe==null||ld.strSe.length()==0){
 			parseCR();
 		}
 	
