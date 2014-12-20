@@ -42,7 +42,7 @@ public class ProjectUtil {
 //	public static String[] delimter = null;
 	// 每个工程模板的跟目录
 	//static Map<IProject,IPath> webRoot = new HashMap<IProject,IPath>();
-	
+	static DocumentCache docCache = new DocumentCache();
 	public static String line = System.getProperty("line.separator");
 	
 	public static BeetlTokenSource getBeetlTokenSource(String str,String type,IDocument doc){
@@ -52,6 +52,21 @@ public class ProjectUtil {
 		
 		source.ld = ld;
 		source.parse(str);
+		return source;
+	}
+	
+	public static BeetlTokenSource getBeetlTokenSource(Document doc){
+		BeetlTokenSource source = docCache.getTokenSource(doc);
+		
+		if(source!=null) return source;
+		
+		String[] delimter = ((MyDocument)doc).delimter;
+		LexerDelimiter ld = new LexerDelimiter(delimter[2], delimter[3], delimter[0], delimter[1]);
+		source = new BeetlTokenSource(null);
+		
+		source.ld = ld;
+		source.parse(doc.get());
+		docCache.setTokenSource((Document)doc, source);
 		return source;
 	}
 	
@@ -179,13 +194,13 @@ public class ProjectUtil {
 			}
 			qname = new QualifiedName("", BeetlPropertyPage.ST_END);			
 			str[1] = project.getPersistentProperty(qname);
-			if(str[1]==null||str[1].length()==0){
+			if(str[1]==null){
 				str[1] = "%>";
 			}
-			
-			if(str[1].indexOf("\r")!=-1||str[1].indexOf("\n")!=-1){
+			if(str[1].length()==0){
 				str[1] = line;
 			}
+		
 			qname = new QualifiedName("", BeetlPropertyPage.PL_START);
 			str[2] = project.getPersistentProperty(qname);
 			if(str[2]==null||str[2].length()==1){
@@ -269,11 +284,10 @@ public class ProjectUtil {
 	
 	public static  void foldingDocument(BeetlEclipseEditor editor,Document document){
 		
-		 String content = document.get();
-		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,document);	
+		 
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource((Document)document);	
 		
-		 ProjectionViewer viewer = (ProjectionViewer)
-		            editor.getAdapter(ITextOperationTarget.class);	
+	
 		 
 		 List<BeetlToken> tokens = s.getTokens();
 		 List<Position> posList = new ArrayList<Position>();

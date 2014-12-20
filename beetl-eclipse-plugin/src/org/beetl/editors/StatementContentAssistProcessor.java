@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -17,8 +18,8 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer arg0,
 			int offset) {
-		String text = arg0.getDocument().get();		
-		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text, null,arg0.getDocument());	
+		
+		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource((Document)arg0.getDocument());	
 		
 		Object[] info = source.find(offset);
 		if(info!=null){

@@ -5,7 +5,7 @@ import org.beetl.core.parser.BeetlToken;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
@@ -29,9 +29,7 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 		IFile file = ProjectUtil.getInputFile(wbPage.getActiveEditor().getEditorInput());
 		
 	
-		String content = source.getDocument().get();
-		
-		BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,source.getDocument());	
+		BeetlTokenSource s = ProjectUtil.getBeetlTokenSource((Document)source.getDocument());	
 		
 		Object[] result = s.find(region.getOffset());
 		if(result==null) return null;
@@ -57,9 +55,13 @@ public class BeetlHyperlinkDetector extends AbstractHyperlinkDetector {
 			//正则判断是否以.xxx结尾
 //			System.out.println("targetFile:"+targetFile.getLocationURI());
 			
+			if(targetFile!=null&&targetFile.isAccessible()){
+				Region newRegion = new Region(token.start+1,path.length());
+				return new IHyperlink[]{ new BeetlTemplateHyperlink(newRegion,targetFile)};
+			}else{
+				return null;
+			}
 		
-			Region newRegion = new Region(token.start+1,path.length());
-			return new IHyperlink[]{ new BeetlTemplateHyperlink(newRegion,targetFile)};
 		}else{
 			return null;
 		}

@@ -15,7 +15,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.viewers.ISelection;
 
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
@@ -37,22 +39,34 @@ public class PreStatHandler extends AbstractHandler {
 
 		 ITextEditor editor =  ProjectUtil.getActiveEditor(event) ;
 		 Document document = ProjectUtil.getDocument(editor);
-		 String content = document.get();
-		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(content, null,document);
+		
+		 BeetlTokenSource s = ProjectUtil.getBeetlTokenSource(document);
 		
 		 ISourceViewer viewer = (ISourceViewer)
 		            editor.getAdapter(ITextOperationTarget.class);			 
-		 int offset  =   viewer.getTextWidget().getCaretOffset();
+	
 		 
-		BeetlToken token = s.findPreStOrHolder(offset);
-		if(token==null){
-			//Toolkit.getDefaultToolkit().beep();
-			Display.getDefault().beep();
-			return null;
-		}
-		int newOffset = token.end;
-		//viewer.getTextWidget().setSelection(newOffset);
-		editor.selectAndReveal(newOffset, 0);
+			ISelection selection = viewer.getSelectionProvider().getSelection();
+			if (selection instanceof ITextSelection) {
+				ITextSelection textSelection = (ITextSelection) selection;
+				if (textSelection.getOffset() != 0
+						|| textSelection.getLength() != 0) {
+					int offset = textSelection.getOffset();
+					BeetlToken token = s.findPreStOrHolder(offset);
+					if(token==null){
+						//Toolkit.getDefaultToolkit().beep();
+						Display.getDefault().beep();
+						return null;
+					}
+					int newOffset = token.end;
+					//viewer.getTextWidget().setSelection(newOffset);
+					editor.selectAndReveal(newOffset, 0);
+				}
+
+			}
+		 
+		 
+	
 		return null;
 		
 	}

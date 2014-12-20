@@ -130,6 +130,7 @@ public class BeetlLexer {
 	public LexerState state = null;
 	public Source source = null;
 	LexerDelimiter ld;
+	boolean stEndIsCR = false ;
 
 	public BeetlLexer(Source source, LexerDelimiter ld) {
 		 this(source, ld, -1);
@@ -146,7 +147,11 @@ public class BeetlLexer {
 		}
 		if(ld.strSe==null||ld.strSe.length()==0){
 			parseCR();
+			stEndIsCR = true;
+		}else if(ld.strSe.indexOf("\r")!=-1||ld.strSe.indexOf("\n")!=-1){
+			stEndIsCR = true;
 		}
+		
 	
 	}
 
@@ -248,6 +253,9 @@ public class BeetlLexer {
 				BeetlToken t = this.getToken(ld.se.length, ST_SE_TT,
 						this.ld.strSe);
 				state.model = LexerState.STATIC_MODEL;
+				if(stEndIsCR){
+					state.addLine();
+				}
 				return t;
 
 			} else if (c == this.ld.pe[0] && state.model == LexerState.PH_MODEL
@@ -995,10 +1003,10 @@ public class BeetlLexer {
 
 	public static void main(String[] args) {
 		System.err.println(tokens.length);
-		String template = "@var a=1 \n tttt"
+		String template = "@var a=1 \n tttt \n @var b=1 "
 				+ "%>";
 		Source source = new Source(template);
-		LexerDelimiter ld = new LexerDelimiter("${", "}", "@", "\n");
+		LexerDelimiter ld = new LexerDelimiter("${", "}", "@", null);
 
 		BeetlLexer lexer = new BeetlLexer(source, ld);
 		BeetlToken token = null;// lexer.nextToken();

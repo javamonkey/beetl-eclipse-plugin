@@ -143,7 +143,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 		lastToken = new BeetlToken();
 		this.length =0 ;
 		this.offset = 0;
-//		System.out.println("part:" + content);
+		//System.out.println("part:" + content);
 
 	}
 

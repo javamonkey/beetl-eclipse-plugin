@@ -1,11 +1,11 @@
 package org.beetl.editors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -42,8 +42,8 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 			return ;
 		}
 		reset(st);
-		String text = view.getDocument().get();
-		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource(text,null, view.getDocument());
+		
+		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource((Document)view.getDocument());
 	
 		Object[] info = source.find(offset+1);
 		if(info==null)return ;
