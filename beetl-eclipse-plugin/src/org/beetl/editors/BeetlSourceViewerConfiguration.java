@@ -74,6 +74,8 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	    		BeetlPartitionScanner.STATEMENT_PART);
 	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
 	    		BeetlPartitionScanner.PLACE_HOLDER_PART);
+	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
+	    		BeetlPartitionScanner.STATIC_TEXT_PART);
 	    assistant.enableAutoActivation(true);
 	    assistant.setAutoActivationDelay(500);
 	    assistant.setProposalPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
@@ -84,7 +86,7 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer,
             String contentType){
-		if(contentType.equals(BeetlPartitionScanner.STATEMENT_PART)||contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
+		if(contentType.equals(BeetlPartitionScanner.STATEMENT_PART)||contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)||contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
 			return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy(),new AutoPairEditStrategy()};
 		}else return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy()};
 	}
