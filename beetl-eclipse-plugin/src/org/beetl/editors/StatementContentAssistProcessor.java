@@ -24,6 +24,7 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 		Object[] info = source.find(offset);
 		if(info!=null){
 			BeetlToken token = (BeetlToken)info[0];
+			System.out.println("token.getType(): "+token.getType()+"  offset: "+offset);
 			if(token.getType()==BeetlLexer.ID_TT){
 				String id = token.getText();
 				List<String> list = getString(source,id,offset);
@@ -42,6 +43,24 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 		        }
 		        return result;
 				
+			}else if(token.getType()==BeetlLexer.TEXT_TT){
+				List<String> list = new ArrayList<String>();
+				//定界符号
+				list.add("<%%>");
+				
+				ICompletionProposal[] result = new ICompletionProposal[list.size()];
+		        int i = 0;
+		        for (String key:list)
+		        {
+		           
+
+		            result[i++] = new CompletionProposal(key, 
+		            		token.start, 
+		             token.end-token.start, 
+		             key.length()-2);
+
+		        }
+		        return result;
 			}
 			
 		}

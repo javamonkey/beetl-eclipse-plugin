@@ -32,7 +32,7 @@ public class CommentOutHandler  extends AbstractHandler {
 
 		/*
 		 * just comment out a single line, without the NPT check cannot work with a selected block yet.
-		 */
+		 */		
 		if(selection instanceof TextSelection){
 			try {
 				document.getLineInformationOfOffset( ((TextSelection)selection).getOffset());
@@ -54,6 +54,7 @@ public class CommentOutHandler  extends AbstractHandler {
 
 		return null;
 	}
+
 	
 
 
