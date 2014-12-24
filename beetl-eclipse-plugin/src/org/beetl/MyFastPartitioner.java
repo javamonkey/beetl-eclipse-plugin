@@ -446,6 +446,8 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                 	ProjectUtil.foldingDocument(editor, (Document)fDocument);
+                	
+                	
                 }
 
 			});

@@ -12,10 +12,13 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.URLHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguration {
 
@@ -102,5 +105,25 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		return new IHyperlinkDetector[] { new URLHyperlinkDetector() ,new BeetlHyperlinkDetector()};
+	}
+	
+	@Override
+	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+
+		
+		if (editor != null && editor.isEditable()) {
+
+//			JavaCompositeReconcilingStrategy strategy= new JavaCompositeReconcilingStrategy(sourceViewer, editor, getConfiguredDocumentPartitioning(sourceViewer));
+//			JavaReconciler reconciler= new JavaReconciler(editor, strategy, false);
+//			reconciler.setIsAllowedToModifyDocument(false);
+//			reconciler.setDelay(500);
+//
+//			return reconciler;
+			BeetlReconcilingStrategy stra = new BeetlReconcilingStrategy();
+			MonoReconciler reconciler= new MonoReconciler(stra, false);
+			reconciler.setDelay(500);
+			return reconciler;
+		}
+		return null;
 	}
 }

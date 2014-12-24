@@ -3,11 +3,14 @@ package org.beetl.editors;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.internal.preferences.Activator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
@@ -17,7 +20,6 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class BeetlEclipseEditor extends TextEditor {
@@ -30,7 +32,11 @@ public class BeetlEclipseEditor extends TextEditor {
 
 	private ProjectionSupport projectionSupport;
 	private Annotation[] oldAnnotations;
+	private Annotation[] oldErrorAnnotations;
+
 	private ProjectionAnnotationModel annotationModel;
+
+	IAnnotationModel helpModel = null;
 
 	public BeetlEclipseEditor() {
 		super();
@@ -52,55 +58,85 @@ public class BeetlEclipseEditor extends TextEditor {
 		viewer.doOperation(ProjectionViewer.TOGGLE);
 
 		annotationModel = viewer.getProjectionAnnotationModel();
+		helpModel = viewer.getVisualAnnotationModel();
+
 		ProjectUtil.foldingDocument(this, (Document) viewer.getDocument());
-		
 
 	}
 
 	protected ISourceViewer createSourceViewer(Composite parent,
 			IVerticalRuler ruler, int styles) {
-				
-		
+
 		ISourceViewer viewer = new ProjectionViewer(parent, ruler,
 				getOverviewRuler(), isOverviewRulerVisible(), styles);
 
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
-		
-		
-		
+
 		return viewer;
 	}
-	
-	public void addFoldingStructure(Position pos){
-		 ProjectionAnnotation annotation = new ProjectionAnnotation();
-		 if(annotationModel==null) return ;
-		 annotationModel.addAnnotation(annotation, pos);
+
+	public void addFoldingStructure(Position pos) {
+		ProjectionAnnotation annotation = new ProjectionAnnotation();
+		if (annotationModel == null)
+			return;
+		annotationModel.addAnnotation(annotation, pos);
 	}
-	
-	public void updateFoldingStructure(List positions)
-	{
-	   
-		
+
+	public void updateFoldingStructure(List positions) {
+
 		Annotation[] annotations = new Annotation[positions.size()];
 
-	   //this will hold the new annotations along
-	   //with their corresponding positions
-	   HashMap newAnnotations = new HashMap();
+		// this will hold the new annotations along
+		// with their corresponding positions
+		HashMap newAnnotations = new HashMap();
 
-	   for(int i = 0; i < positions.size();i++)
-	   {
-	      ProjectionAnnotation annotation = new ProjectionAnnotation();
+		for (int i = 0; i < positions.size(); i++) {
+			ProjectionAnnotation annotation = new ProjectionAnnotation();
 
-	      newAnnotations.put(annotation, positions.get(i));
+			newAnnotations.put(annotation, positions.get(i));
 
-	      annotations[i] = annotation;
-	   }
+			annotations[i] = annotation;
+		}
 
-	   annotationModel.modifyAnnotations(oldAnnotations, newAnnotations,null);
+		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
 
-	   oldAnnotations = annotations;
-	  
+		oldAnnotations = annotations;
+//		{
+//
+//			newAnnotations = new HashMap();
+//
+//			BeetlProblemAnnotation annotation = new BeetlProblemAnnotation(
+//					"xxxx");
+//
+//			newAnnotations.put(annotation, new Position(10));
+//
+//			((IAnnotationModelExtension) helpModel).replaceAnnotations(null,
+//					newAnnotations);
+//		}
+
+	}
+
+	public void updateErrorNode(List positions, List<String> list) {
+
+		Annotation[] annotations = new Annotation[positions.size()];
+
+		HashMap newAnnotations = new HashMap();
+
+		for (int i = 0; i < positions.size(); i++) {
+			BeetlProblemAnnotation annotation = new BeetlProblemAnnotation(
+					list.get(i));
+
+			newAnnotations.put(annotation, positions.get(i));
+
+			annotations[i] = annotation;
+		}
+
+		((IAnnotationModelExtension) helpModel).replaceAnnotations(
+				oldErrorAnnotations, newAnnotations);
+
+		this.oldErrorAnnotations = annotations;
+
 	}
 
 	@Override
@@ -155,6 +191,13 @@ public class BeetlEclipseEditor extends TextEditor {
 
 	public ProjectionAnnotationModel getAnnotationModel() {
 		return annotationModel;
+	}
+
+	protected SourceViewerDecorationSupport getSourceViewerDecorationSupport(
+			ISourceViewer viewer) {
+		SourceViewerDecorationSupport support = super
+				.getSourceViewerDecorationSupport(viewer);
+		return support;
 	}
 
 }
