@@ -424,7 +424,9 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 								new TypedPosition(start, length, contentType));
 						rememberRegion(start, length);
 					} catch (BadPositionCategoryException x) {
+						x.printStackTrace();
 					} catch (BadLocationException x) {
+						x.printStackTrace();
 					}
 				}
 
@@ -443,6 +445,20 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 				rememberRegion(p.offset, p.length);
 			}
 			
+		
+			
+			
+
+		} catch (BadPositionCategoryException x) {
+			// should never happen on connected documents
+			x.printStackTrace();
+		} catch (BadLocationException x) {
+			x.printStackTrace();
+		}catch(Throwable x){
+			x.printStackTrace();
+		}
+		finally {
+			clearPositionCache();
 			Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
                 	ProjectUtil.foldingDocument(editor, (Document)fDocument);
@@ -451,14 +467,6 @@ public class MyFastPartitioner implements IDocumentPartitioner,
                 }
 
 			});
-			
-			
-
-		} catch (BadPositionCategoryException x) {
-			// should never happen on connected documents
-		} catch (BadLocationException x) {
-		} finally {
-			clearPositionCache();
 		}
 
 		return createRegion();

@@ -63,7 +63,7 @@ public class ProjectUtil {
 		return source;
 	}
 	
-	public static BeetlTokenSource getBeetlTokenSource(Document doc){
+	public static synchronized BeetlTokenSource getBeetlTokenSource(Document doc){
 		BeetlTokenSource source = docCache.getTokenSource(doc);
 		
 		if(source!=null) return source;

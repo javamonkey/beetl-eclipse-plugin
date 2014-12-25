@@ -14,6 +14,7 @@ public class DocumentCache  {
 		if(time==null) return null;
 		if(doc.getModificationStamp()!=time) return null;
 		return map.get(doc);
+//		return null;
 	}
 	
 	public synchronized void setTokenSource(Document doc,BeetlTokenSource source){

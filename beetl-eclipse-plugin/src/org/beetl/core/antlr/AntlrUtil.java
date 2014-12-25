@@ -58,11 +58,15 @@ public class AntlrUtil {
 			ErrorInfo info = new ErrorInfo(ex);
 		
 			Map<Integer,String> error = new HashMap<Integer,String> ();
-			String showMsg = "错误符号:"+info.getErrorTokenText()+",错误类型:"+info.getType();
+			String showMsg = "";
+			
+			
+			showMsg = "错误符号:"+info.getErrorTokenText();
 			if(info.getMsg()!=null){
-				showMsg = showMsg+" 信息:"+info.getMsg();
+				showMsg = showMsg+" 信息:"+info.getMsg()/*+" 错误符号:"+info.getErrorTokenText()*/;
 			}
 			error.put(ex.token.line, showMsg);
+			
 			return error;
 		}
 		
