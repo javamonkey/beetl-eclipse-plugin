@@ -1,9 +1,18 @@
 package org.beetl.editors;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.beetl.MyDocument;
+import org.beetl.core.antlr.BeetlParser;
+import org.beetl.core.antlr.BeetlParser.ProgContext;
+import org.beetl.core.antlr.Transformator;
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlTextToken;
 import org.beetl.core.parser.BeetlToken;
@@ -25,7 +34,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -355,6 +363,8 @@ public class ProjectUtil {
 		
 		 
 	}
+	
+	
 	
 	
 //	public static String[] getBasicConfig(String configPath){

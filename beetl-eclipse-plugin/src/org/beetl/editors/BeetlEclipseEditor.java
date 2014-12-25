@@ -102,9 +102,15 @@ public class BeetlEclipseEditor extends TextEditor {
 		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
 
 		oldAnnotations = annotations;
-//		{
-//
-//			newAnnotations = new HashMap();
+		
+
+	}
+
+	public void updateErrorNode(List positions, List<String> msgs) {
+
+		{
+
+//			HashMap newAnnotations = new HashMap();
 //
 //			BeetlProblemAnnotation annotation = new BeetlProblemAnnotation(
 //					"xxxx");
@@ -113,30 +119,34 @@ public class BeetlEclipseEditor extends TextEditor {
 //
 //			((IAnnotationModelExtension) helpModel).replaceAnnotations(null,
 //					newAnnotations);
-//		}
-
-	}
-
-	public void updateErrorNode(List positions, List<String> list) {
-
-		Annotation[] annotations = new Annotation[positions.size()];
+		}
+		
+		
+		Annotation[] tempOldAnnotations = new Annotation[positions.size()];
 
 		HashMap newAnnotations = new HashMap();
 
 		for (int i = 0; i < positions.size(); i++) {
 			BeetlProblemAnnotation annotation = new BeetlProblemAnnotation(
-					list.get(i));
+					msgs.get(i));
 
 			newAnnotations.put(annotation, positions.get(i));
 
-			annotations[i] = annotation;
+			tempOldAnnotations[i] = annotation;
 		}
 
 		((IAnnotationModelExtension) helpModel).replaceAnnotations(
 				oldErrorAnnotations, newAnnotations);
+		
+		
 
-		this.oldErrorAnnotations = annotations;
+		this.oldErrorAnnotations = tempOldAnnotations;
 
+	}
+	
+	public void removeErrorNode(){
+		((IAnnotationModelExtension) helpModel).removeAllAnnotations();
+		this.oldErrorAnnotations  = null;
 	}
 
 	@Override

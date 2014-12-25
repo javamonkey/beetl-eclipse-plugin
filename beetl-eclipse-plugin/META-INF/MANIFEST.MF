@@ -13,3 +13,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.beetl.activator.BeetlActivator
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/antlr4-runtime-4.2.2.jar,
+ .

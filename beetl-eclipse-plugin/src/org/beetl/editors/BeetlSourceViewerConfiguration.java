@@ -121,7 +121,7 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 //			reconciler.setDelay(500);
 //
 //			return reconciler;
-			BeetlReconcilingStrategy stra = new BeetlReconcilingStrategy();
+			BeetlReconcilingStrategy stra = new BeetlReconcilingStrategy(editor);
 			MonoReconciler reconciler= new MonoReconciler(stra, false);
 			reconciler.setDelay(500);
 			return reconciler;
