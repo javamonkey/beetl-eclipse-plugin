@@ -18,79 +18,85 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer arg0,
 			int offset) {
-		
-		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource((Document)arg0.getDocument());	
-		
+
+		BeetlTokenSource source = ProjectUtil
+				.getBeetlTokenSource((Document) arg0.getDocument());
+
 		Object[] info = source.find(offset);
-		if(info!=null){
-			BeetlToken token = (BeetlToken)info[0];
-			System.out.println("token.getType(): "+token.getType()+"  offset: "+offset);
-			if(token.getType()==BeetlLexer.ID_TT){
+		if (info != null) {
+			BeetlToken token = (BeetlToken) info[0];
+			System.out.println("token.getType(): " + token.getType()
+					+ "  offset: " + offset);
+			if (token.getType() == BeetlLexer.ID_TT) {
 				String id = token.getText();
-				List<String> list = getString(source,id,offset);
-				if(list.size()==0) return null;
-				ICompletionProposal[] result = new ICompletionProposal[list.size()];
-		        int i = 0;
-		        for (String key:list)
-		        {
-		           
+				List<String> list = getString(source, id, offset);
+				if (list.size() == 0)
+					return null;
+				ICompletionProposal[] result = new ICompletionProposal[list
+						.size()];
+				int i = 0;
+				for (String key : list) {
 
-		            result[i++] = new CompletionProposal(key, 
-		            		token.start, 
-		             token.end-token.start, 
-		             key.length());
+					result[i++] = new CompletionProposal(key, token.start,
+							token.end - token.start, key.length());
 
-		        }
-		        return result;
-				
-			}else if(token.getType()==BeetlLexer.TEXT_TT){
-				List<String> list = new ArrayList<String>();
-				//定界符号
-				list.add("<%%>");
-				
-				ICompletionProposal[] result = new ICompletionProposal[list.size()];
-		        int i = 0;
-		        for (String key:list)
-		        {
-		           
+				}
+				return result;
 
-		            result[i++] = new CompletionProposal(key, 
-		            		token.start, 
-		             token.end-token.start, 
-		             key.length()-2);
-
-		        }
-		        return result;
+			} else if (token.getType() == BeetlLexer.TEXT_TT) {
+				return getDelimit(token,offset);
 			}
-			
+
+		} else if (offset == 0) {
+			return getDelimit(null,offset);
 		}
 		return null;
 	}
-	
-	
-	private List<String> getString(BeetlTokenSource source,String id,int offset){
+
+	private ICompletionProposal[] getDelimit(BeetlToken token,int offset) {
 		List<String> list = new ArrayList<String>();
-		
-		//检测之前的变量
+		// 定界符号
+		list.add("<%%>");
+
+		ICompletionProposal[] result = new ICompletionProposal[list.size()];
+		int i = 0;
+		for (String key : list) {
+
+			if (token != null) {
+				result[i++] = new CompletionProposal(key, offset,
+						0, offset-2);
+			} else {
+				result[i++] = new CompletionProposal(key, 0, 0, 2);
+			}
+
+		}
+		return result;
+	}
+
+	private List<String> getString(BeetlTokenSource source, String id,
+			int offset) {
+		List<String> list = new ArrayList<String>();
+
+		// 检测之前的变量
 		List<BeetlToken> tokens = source.tokens;
-		for(BeetlToken t:tokens){
-			if(t.start>offset)break;
-			if(t.getType()==BeetlLexer.ID_TT){
-				if(t.getText().indexOf(id)!=-1){
+		for (BeetlToken t : tokens) {
+			if (t.start > offset)
+				break;
+			if (t.getType() == BeetlLexer.ID_TT) {
+				if (t.getText().indexOf(id) != -1) {
 					list.add(t.getText());
 				}
 			}
 		}
-		
-		//检测关键字
+
+		// 检测关键字
 		for (String keyWord : BeetlLexer.tokens) {
-			if(keyWord.indexOf(id) != -1){
+			if (keyWord.indexOf(id) != -1) {
 				list.add(keyWord);
 			}
 		}
 		return list;
 	}
-	
 
 	@Override
 	public IContextInformation[] computeContextInformation(ITextViewer arg0,
