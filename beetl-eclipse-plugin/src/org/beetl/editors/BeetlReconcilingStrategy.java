@@ -6,11 +6,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.beetl.core.antlr.AntlrUtil;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.eclipse.swt.widgets.Display;
 
 public class BeetlReconcilingStrategy implements IReconcilingStrategy {
 
@@ -41,6 +43,10 @@ public class BeetlReconcilingStrategy implements IReconcilingStrategy {
 	}
 	
 	public void printError(){
+		
+
+	
+		
 		AntlrUtil util = new AntlrUtil();
 		try {
 			Map<Integer,String> error = util.getErrorInfo(document);

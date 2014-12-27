@@ -1,9 +1,11 @@
 package org.beetl.editors;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.internal.preferences.Activator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
@@ -83,25 +85,58 @@ public class BeetlEclipseEditor extends TextEditor {
 		annotationModel.addAnnotation(annotation, pos);
 	}
 
-	public void updateFoldingStructure(List positions) {
+	public void updateFoldingStructure(List<Position> positions) {
 
+//		Annotation[] annotations = new Annotation[positions.size()];
+//
+//		// this will hold the new annotations along
+//		// with their corresponding positions
+//		HashMap newAnnotations = new HashMap();
+//
+//		for (int i = 0; i < positions.size(); i++) {
+//			ProjectionAnnotation annotation = new ProjectionAnnotation();
+//
+//			newAnnotations.put(annotation, positions.get(i));
+//
+//			annotations[i] = annotation;
+//		}
+//
+//		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
+//
+//		oldAnnotations = annotations;
+		
+		
 		Annotation[] annotations = new Annotation[positions.size()];
-
-		// this will hold the new annotations along
-		// with their corresponding positions
-		HashMap newAnnotations = new HashMap();
-
-		for (int i = 0; i < positions.size(); i++) {
+		Map<Annotation, Position> newAnnotations = new HashMap<Annotation, Position>();
+		for(int i = 0; i < positions.size(); i++){
 			ProjectionAnnotation annotation = new ProjectionAnnotation();
-
 			newAnnotations.put(annotation, positions.get(i));
-
 			annotations[i] = annotation;
 		}
-
-		annotationModel.modifyAnnotations(oldAnnotations, newAnnotations, null);
-
-		oldAnnotations = annotations;
+		
+		// get old annotation
+		Map<Position, Annotation> oldAnnotations = new HashMap<Position, Annotation>();
+		
+		Iterator iter = annotationModel.getAnnotationIterator();
+		while(iter.hasNext()) {
+			Annotation anno = (Annotation)iter.next();
+			Position pos = annotationModel.getPosition(anno);
+			oldAnnotations.put(pos, anno);
+		}
+		
+		// remove duplicated
+		List<Annotation> newKey = new ArrayList<Annotation>(newAnnotations.keySet());
+		for(Annotation anno : newKey) {
+			Position pos = newAnnotations.get(anno);
+			if(oldAnnotations.containsKey(pos)) {
+				oldAnnotations.remove(pos);
+				newAnnotations.remove(anno);
+			}
+		}
+		
+		// replace annotations
+		annotationModel.modifyAnnotations(
+			oldAnnotations.values().toArray(new Annotation[0]), newAnnotations, null);
 		
 
 	}

@@ -414,8 +414,13 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 				// area covered by the event, we are done
 				if (fDocument
 						.containsPosition(fPositionCategory, start, length)) {
-					if (lastScannedPosition >= e.getOffset() + newLength)
+					if (lastScannedPosition >= e.getOffset() + newLength){
+
+						
 						return createRegion();
+					}
+						
+						
 					++first;
 				} else {
 					// insert the new type position
@@ -447,7 +452,6 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			
 		
 			
-			
 
 		} catch (BadPositionCategoryException x) {
 			// should never happen on connected documents
@@ -458,15 +462,17 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			x.printStackTrace();
 		}
 		finally {
-			clearPositionCache();
 			Display.getDefault().asyncExec(new Runnable() {
-                public void run() {
-                	ProjectUtil.foldingDocument(editor, (Document)fDocument);
-                	
-                	
-                }
+	            public void run() {
+	            	ProjectUtil.foldingDocument(editor, (Document)fDocument);
+	            	
+	            	
+	            }
 
 			});
+		
+			clearPositionCache();
+		
 		}
 
 		return createRegion();
