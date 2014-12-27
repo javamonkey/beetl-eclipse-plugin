@@ -111,7 +111,11 @@ public class BeetlLexer {
 	
 	static{
 		for (String string : tokens) {
-			tokenSet.add(string);
+			 char c = string.charAt(0);
+			 if(c>='a'&&c<'z'){
+				 tokenSet.add(string);
+			 }
+			
 		}
 	}
 	
