@@ -3,9 +3,11 @@ package org.beetl.editors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.beetl.MyDocument;
 import org.beetl.core.parser.BeetlLexer;
 import org.beetl.core.parser.BeetlToken;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -22,6 +24,8 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 		BeetlTokenSource source = ProjectUtil
 				.getBeetlTokenSource((Document) arg0.getDocument());
 
+		MyDocument document = (MyDocument)arg0.getDocument();
+		
 		Object[] info = source.find(offset);
 		if (info != null) {
 			BeetlToken token = (BeetlToken) info[0];
@@ -43,28 +47,32 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 				}
 				return result;
 
-			} else if (token.getType() == BeetlLexer.TEXT_TT) {
-				return getDelimit(token,offset);
+			} else{
+				return getDelimit(token,offset,document);
 			}
 
-		} else if (offset == 0) {
-			return getDelimit(null,offset);
+		} else{
+			return getDelimit(null,offset,document);
 		}
-		return null;
 	}
 
-	private ICompletionProposal[] getDelimit(BeetlToken token,int offset) {
+	private ICompletionProposal[] getDelimit(BeetlToken token,int offset,MyDocument document) {
 		List<String> list = new ArrayList<String>();
-		// 定界符号
-		list.add("<%%>");
+		// 定界符号和占位符
+		list.add(document.delimter[0]+document.delimter[1]);
+		list.add(document.delimter[2]+document.delimter[3]);
 
 		ICompletionProposal[] result = new ICompletionProposal[list.size()];
 		int i = 0;
 		for (String key : list) {
 
 			if (token != null) {
-				result[i++] = new CompletionProposal(key, offset,
-						0, offset-2);
+				int positionOffset = offset;
+				int cursor = offset+2;
+				System.out.println("positionOffset: "+positionOffset);
+				System.out.println("cursor: "+cursor);
+				result[i++] = new CompletionProposal(key, positionOffset,
+						0, cursor);
 			} else {
 				result[i++] = new CompletionProposal(key, 0, 0, 2);
 			}
