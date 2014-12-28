@@ -50,6 +50,8 @@ public class AnotherPairHandler extends AbstractHandler {
 			if (textSelection.getOffset() != 0
 					|| textSelection.getLength() != 0) {
 				int offset = textSelection.getOffset();
+				//看前一个字符
+				offset--;
 				BeetlToken token = s.findPair(offset, BeetlLexer.LEFT_BRACE_TT,
 						BeetlLexer.RIGHT_BRACE_TT);
 				if (token == null) {

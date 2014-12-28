@@ -40,6 +40,8 @@ public class BeetlCharacterPairMatcher implements ICharacterPairMatcher {
 	public IRegion match(IDocument doc, int offset) {
 		
 		BeetlTokenSource source = ProjectUtil.getBeetlTokenSource((Document)doc);	
+		//看前面一个字符
+		offset--;
 		Object[] info = source.find(offset);
 		if(info==null) return null;
 		BeetlToken t = (BeetlToken)info[0];

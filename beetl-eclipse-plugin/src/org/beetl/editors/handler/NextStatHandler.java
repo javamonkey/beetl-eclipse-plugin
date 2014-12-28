@@ -53,6 +53,7 @@ public class NextStatHandler extends AbstractHandler {
 				if (token == null) {
 					// Toolkit.getDefaultToolkit().beep();
 					Display.getDefault().beep();
+					return null;
 
 				}
 				int newOffset = token.end;

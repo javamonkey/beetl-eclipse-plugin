@@ -980,12 +980,12 @@ public class BeetlLexer {
 		int start = source.pos();
 		while ((c = source.get()) != Source.EOF) {
 			if (c == '\r' || c == '\n') {
-//				if(stEndIsCR){
-//					//换行符号属于定界符一部分
-//					break ;
-//				}else{
-//					consumeMoreCR(c);
-//				}
+				if(stEndIsCR){
+					//换行符号属于定界符一部分
+					break ;
+				}else{
+					consumeMoreCR(c);
+				}
 				
 				break;
 			} else {
