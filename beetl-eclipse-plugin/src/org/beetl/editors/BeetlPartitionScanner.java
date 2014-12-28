@@ -159,19 +159,32 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	}
 
 	@Override
+//	public void setPartialRange(IDocument document, int offset, int length,
+//			String contentType, int partitionOffset) {
+//		this.contentType = contentType;
+////		if (partitionOffset == -1)
+////			partitionOffset = 0;
+////		else {
+////			this.partionOffset = partitionOffset;
+////		}
+//		this.partionOffset = offset;
+//
+//		setRange(document, offset, length);
+//	}
+
+	
 	public void setPartialRange(IDocument document, int offset, int length,
 			String contentType, int partitionOffset) {
 		this.contentType = contentType;
-//		if (partitionOffset == -1)
-//			partitionOffset = 0;
-//		else {
-//			this.partionOffset = partitionOffset;
-//		}
-		this.partionOffset = offset;
+		if (partitionOffset == -1)
+			partitionOffset = 0;
+		else {
+			this.partionOffset = partitionOffset;
+		}
 
-		setRange(document, offset, length);
+		setRange(document, partitionOffset, length+(offset-partitionOffset));
 	}
-
+	
 	public void testInit(String str) {
 		this.content = str;
 		source = new Source(content);

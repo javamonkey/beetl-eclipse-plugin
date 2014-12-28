@@ -104,7 +104,7 @@ public class CommentOutHandler  extends AbstractHandler {
 					offset = t.col ;
 					
 				}else 	if(t.getType()==BeetlLexer.ST_SS_TT){
-					offset = t.col;				
+					offset = t.col+(t.end-t.start-1);				
 					
 				}else if(t.getType()==BeetlLexer.TEXT_TT){
 					return  new int[]{0,0};

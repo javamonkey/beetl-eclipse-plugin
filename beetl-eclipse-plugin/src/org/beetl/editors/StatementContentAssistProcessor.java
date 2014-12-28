@@ -105,12 +105,12 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			}
 		}
 
-//		// 检测关键字
-//		for (String keyWord : BeetlLexer.tokenSet) {
-//			if (id==null||keyWord.indexOf(id) != -1) {
-//				list.add(keyWord);
-//			}
-//		}
+		// 检测关键字
+		for (String keyWord : BeetlLexer.tokenSet) {
+			if (id==null||keyWord.indexOf(id) != -1) {
+				list.add(keyWord);
+			}
+		}
 		return list;
 	}
 
