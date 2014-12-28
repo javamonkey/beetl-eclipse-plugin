@@ -462,14 +462,7 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 			x.printStackTrace();
 		}
 		finally {
-			Display.getDefault().asyncExec(new Runnable() {
-	            public void run() {
-	            	ProjectUtil.foldingDocument(editor, (Document)fDocument);
-	            	
-	            	
-	            }
-
-			});
+			
 		
 			clearPositionCache();
 		

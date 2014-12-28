@@ -29,12 +29,9 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			//刚开始
 			return getDelimit(offset,document);
 		}
-		Object[] info = source.find(offset);
+		Object[] info = source.find(offset-1);
 		if (info != null) {
-			return showInStatment((MyDocument)document,source,(BeetlToken)info[0],offset);
-		}else{
-			//文档末，
-			info = source.find(offset-1);
+		
 			BeetlToken pre = (BeetlToken)info[0];
 			if(pre.getType()==BeetlLexer.PH_SE_TT||pre.getType()==BeetlLexer.ST_SE_TT){
 				//静态文本
@@ -42,8 +39,10 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			}else{
 				return showInStatment((MyDocument)document,source,(BeetlToken)info[0],offset);
 			}
-			
+		
+		
 		}
+		return null;
 		
 	}
 	
@@ -57,6 +56,7 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			}
 			
 			List<String> list = getString(source, id, offset);
+			if(id!=null)list.remove(id);
 			if (list.size() == 0)
 				return null;
 			ICompletionProposal[] result = new ICompletionProposal[list
@@ -64,7 +64,7 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			int i = 0;
 			for (String key : list) {
 
-				result[i++] = new CompletionProposal(key, offset,
+				result[i++] = new CompletionProposal(key,id!=null?token.start:offset,
 						id!=null?id.length():0, key.length());
 
 			}
@@ -105,12 +105,12 @@ public class StatementContentAssistProcessor implements IContentAssistProcessor 
 			}
 		}
 
-		// 检测关键字
-		for (String keyWord : BeetlLexer.tokenSet) {
-			if (id==null||keyWord.indexOf(id) != -1) {
-				list.add(keyWord);
-			}
-		}
+//		// 检测关键字
+//		for (String keyWord : BeetlLexer.tokenSet) {
+//			if (id==null||keyWord.indexOf(id) != -1) {
+//				list.add(keyWord);
+//			}
+//		}
 		return list;
 	}
 

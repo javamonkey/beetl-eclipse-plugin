@@ -77,8 +77,7 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	    		BeetlPartitionScanner.PLACE_HOLDER_PART);
 	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
 	    		BeetlPartitionScanner.STATIC_TEXT_PART);
-	    assistant.setContentAssistProcessor(tagContentAssistProcessor,
-	    		IDocument.DEFAULT_CONTENT_TYPE);
+	   
 	    assistant.enableAutoActivation(true);
 	    assistant.setAutoActivationDelay(500);
 	    assistant.setProposalPopupOrientation(IContentAssistant.CONTEXT_INFO_BELOW);
@@ -89,14 +88,14 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer,
             String contentType){
-		if(contentType.equals(BeetlPartitionScanner.STATEMENT_PART)||contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)||contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)||contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)){
+		if(contentType.equals(BeetlPartitionScanner.STATEMENT_PART)||contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)||contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
 			return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy(),new AutoPairEditStrategy()};
 		}else return new IAutoEditStrategy[]{new MyIndentLineAutoEditStrategy()};
 	}
 	
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer){
-		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART,IDocument.DEFAULT_CONTENT_TYPE/*,BeetlPartitionScanner.COMMENT_PART*/};
+		return new String[]{BeetlPartitionScanner.STATEMENT_PART,BeetlPartitionScanner.STATIC_TEXT_PART,BeetlPartitionScanner.PLACE_HOLDER_PART/*,BeetlPartitionScanner.COMMENT_PART*/};
 	}
 
 	

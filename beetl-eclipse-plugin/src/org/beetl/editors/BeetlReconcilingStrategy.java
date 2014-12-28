@@ -45,7 +45,16 @@ public class BeetlReconcilingStrategy implements IReconcilingStrategy {
 	public void printError(){
 		
 
-	
+//		Display.getDefault().asyncExec(new Runnable() {
+//            public void run() {
+//            	ProjectUtil.foldingDocument(editor, (Document)document);
+//            	
+//            	
+//            }
+//
+//		});
+		
+		ProjectUtil.foldingDocument(editor, (Document)document);
 		
 		AntlrUtil util = new AntlrUtil();
 		try {

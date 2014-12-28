@@ -1,7 +1,7 @@
 package org.beetl.core.parser;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 生成token流
@@ -107,7 +107,7 @@ public class BeetlLexer {
 			"elsefor","while","switch","select","directive","DIRECTIVE","case","default","try","catch",
 			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$","//","/**/"};
 	
-	public static Set<String> tokenSet = new HashSet<String>(tokens.length);
+	public static Set<String> tokenSet = new TreeSet<String>();
 	
 	static{
 		for (String string : tokens) {
@@ -125,6 +125,7 @@ public class BeetlLexer {
 	 * @return
 	 */
 	public static boolean contains(String text){
+		if(text==null)return false;
 		if("".equals(text.trim())){
 			return true;
 		}
@@ -978,8 +979,14 @@ public class BeetlLexer {
 		int line = state.line;
 		int start = source.pos();
 		while ((c = source.get()) != Source.EOF) {
-			if (c == '\r' || c == '\n') {				
-				consumeMoreCR(c);
+			if (c == '\r' || c == '\n') {
+				if(stEndIsCR){
+					//换行符号属于定界符一部分
+					break ;
+				}else{
+					consumeMoreCR(c);
+				}
+				
 				break;
 			} else {
 				source.consume();
@@ -1007,10 +1014,10 @@ public class BeetlLexer {
 
 	public static void main(String[] args) {
 		System.err.println(tokens.length);
-		String template = "@var a=1 \n tttt \n @var b=1 "
-				+ "%>";
+		String template = "<% \n var a=1 \n %>\n  ";
+			
 		Source source = new Source(template);
-		LexerDelimiter ld = new LexerDelimiter("${", "}", "@", null);
+		LexerDelimiter ld = new LexerDelimiter("${", "}", "<%", "%>");
 
 		BeetlLexer lexer = new BeetlLexer(source, ld);
 		BeetlToken token = null;// lexer.nextToken();
