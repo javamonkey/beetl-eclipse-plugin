@@ -127,15 +127,15 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			ld =  new LexerDelimiter(de[2], de[3], de[0], de[1]);
 		}
 		int mode = -1;
-		if(this.contentType!=null){
-			if(this.contentType.equals(BeetlPartitionScanner.STATEMENT_PART)){
-				mode = LexerState.ST_MODEL;
-			}else if(this.contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
-				mode = LexerState.PH_MODEL;
-			}else if(this.contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
-				mode = LexerState.STATIC_MODEL;
-			}
-		}
+//		if(this.contentType!=null){
+//			if(this.contentType.equals(BeetlPartitionScanner.STATEMENT_PART)){
+//				mode = LexerState.ST_MODEL;
+//			}else if(this.contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
+//				mode = LexerState.PH_MODEL;
+//			}else if(this.contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
+//				mode = LexerState.STATIC_MODEL;
+//			}
+//		}
 		
 		lexer = new BeetlLexer(source, ld,mode);
 		lastToken = new BeetlToken();
