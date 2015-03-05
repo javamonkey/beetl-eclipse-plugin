@@ -15,12 +15,12 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 	public static String PLACE_HOLDER_PART = "PLACE_HOLDER_PART";
 	public static String STATEMENT_PART = "STATEMENT_PART";
 	public static String STATIC_TEXT_PART = "STATIC_TEXT_PART";
-	public static String COMMENT_PART = "COMMENT_TEXT_PART";
+//	public static String COMMENT_PART = "COMMENT_TEXT_PART";
 
 	static Token HolderToken = new Token(PLACE_HOLDER_PART);
 	static Token TextToken = new Token(STATIC_TEXT_PART);
 	static Token StatementToken = new Token(STATEMENT_PART);
-	static Token CommentToken = new Token(COMMENT_PART);
+//	static Token CommentToken = new Token(COMMENT_PART);
 
 	Source source = null;
 	LexerDelimiter ld = null;
@@ -52,33 +52,19 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 
 	@Override
 	public IToken nextToken() {
-		if(commToken!=null){
-			offset = commToken.start;
-			length = commToken.end - commToken.start;
-			this.lastToken = commToken;
-			commToken  = null;
-			debug(CommentToken);
-			return  CommentToken;
-		}
+		
 		BeetlToken token = lexer.nextToken();
 		if(token == null) return Token.EOF;
 		
 		if (lexer.state.model==LexerState.ST_MODEL) {
 			offset = token.start;
 			length = this.ld.strSs.length();
-			while ((token = lexer.nextToken()) != null) {
-				
-				if (token.getType() == BeetlLexer.ST_SE_TT) {
-					length = token.end - lastToken.end;
+			while ((token = lexer.nextToken()) != null) {				
+				if (token.getType() == BeetlLexer.ST_SE_TT) {				
 					break;
-				}else if(token.getType()==BeetlLexer.MUTIPLE_LINE_COMMENT_TOKEN_TT){
-					commToken = token;
-					break ;
-				}else{
-					length = token.end - lastToken.end;
-					
 				}
 			}
+			length = token.end - lastToken.end;
  			this.lastToken = token;		
 			debug(StatementToken);
 			return StatementToken;
@@ -86,13 +72,13 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			offset = token.start;
 			length = this.ld.strPs.length();
 			while ((token = lexer.nextToken()) != null) {
-				length = token.end - lastToken.end;
+				
 				if (token.getType() == BeetlLexer.PH_SE_TT) {
 					break;
 				}
 			}
 			
-			
+			length = token.end - lastToken.end;
 			this.lastToken = token;
 			debug(HolderToken);
 			return this.HolderToken;
@@ -104,6 +90,7 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			debug(TextToken);
 			return TextToken;
 		} else {
+			//??
 			offset = token.start;
 			length = token.end - token.start;
 			this.lastToken = token;	
@@ -140,15 +127,15 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			ld =  new LexerDelimiter(de[2], de[3], de[0], de[1]);
 		}
 		int mode = -1;
-		if(this.contentType!=null){
-			if(this.contentType.equals(BeetlPartitionScanner.STATEMENT_PART)){
-				mode = LexerState.ST_MODEL;
-			}else if(this.contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
-				mode = LexerState.PH_MODEL;
-			}else if(this.contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
-				mode = LexerState.STATIC_MODEL;
-			}
-		}
+//		if(this.contentType!=null){
+//			if(this.contentType.equals(BeetlPartitionScanner.STATEMENT_PART)){
+//				mode = LexerState.ST_MODEL;
+//			}else if(this.contentType.equals(BeetlPartitionScanner.PLACE_HOLDER_PART)){
+//				mode = LexerState.PH_MODEL;
+//			}else if(this.contentType.equals(BeetlPartitionScanner.STATIC_TEXT_PART)){
+//				mode = LexerState.STATIC_MODEL;
+//			}
+//		}
 		
 		lexer = new BeetlLexer(source, ld,mode);
 		lastToken = new BeetlToken();

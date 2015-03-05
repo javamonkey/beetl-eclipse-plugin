@@ -1,10 +1,10 @@
 package org.beetl.editors;
 
 import org.beetl.MyDocument;
+import org.beetl.MyFastPartitioner;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 import org.eclipse.ui.part.FileEditorInput;
@@ -28,8 +28,8 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 		}
 		
 		if (document != null) {
-			IDocumentPartitioner partitioner = new FastPartitioner(
-					new BeetlPartitionScanner(editor), new String[] {
+			IDocumentPartitioner partitioner = new MyFastPartitioner(
+					editor,new BeetlPartitionScanner(editor), new String[] {
 							BeetlPartitionScanner.PLACE_HOLDER_PART,
 							BeetlPartitionScanner.STATIC_TEXT_PART,						
 							BeetlPartitionScanner.STATEMENT_PART /*,BeetlPartitionScanner.COMMENT_PART*/});

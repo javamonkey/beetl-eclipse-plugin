@@ -349,6 +349,8 @@ public class MyFastPartitioner implements IDocumentPartitioner,
 					reparseStart = partitionStart;
 					--first;
 				} else {
+					
+					
 					partitionStart = partition.getOffset()
 							+ partition.getLength();
 					contentType = IDocument.DEFAULT_CONTENT_TYPE;
