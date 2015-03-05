@@ -99,13 +99,15 @@ public class BeetlLexer {
 	public final static int LEFT_TEXT_TOKEN_TT = 64;
 	public final static int SINGLE_LINE_COMMENT_TOKEN_TT = 65;
 	public final static int MUTIPLE_LINE_COMMENT_TOKEN_TT = 66;
+	
+	public final static int AJAX_TT = 67;
 
 	public static String[] tokens = new String[] { "TEXT", "PS", "PE", "ID",
 			".", "INTERGER", "FLOAT", "++", "--", "+", "-", "(", ")", "STRING",
 			"SS", "SE", "WS", "var", "if", "{", "}", "==", "=", ";", "CR", 
 			"else", "for" , "in", "continue", "break" , "return" ,
 			"elsefor","while","switch","select","directive","DIRECTIVE","case","default","try","catch",
-			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$","//","/**/"};
+			"[","]",".~","*","/","%","!=",">=",">","<=","<","!","&&","||","?","@","null","true","false",",",":","<<",">>","<$","//","/**/","#ajax"};
 	
 	public static Set<String> tokenSet = new TreeSet<String>();
 	
@@ -452,7 +454,7 @@ public class BeetlLexer {
 				}
 
 			}
-			if (c > '0' && c < '9') {
+			else if (c > '0' && c < '9') {
 
 				return numberToken();
 
@@ -555,7 +557,15 @@ public class BeetlLexer {
 				} else {
 					return idToken();
 				}
-			} else {
+			}else if(c=='#'){
+				if(this.forwardMatchsMore('a','j','a','x')){
+					return this.getCharToken(5, AJAX_TT);
+				}else{
+					return this.getSingleErrorToken("Error:" + c);
+				}
+			}
+			
+			else {
 				return this.getSingleErrorToken("Error:" + c);
 			}
 		}

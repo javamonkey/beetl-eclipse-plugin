@@ -50,6 +50,7 @@ public class ColorToken {
 			case BeetlLexer.CATCH_TT:
 			case BeetlLexer.TRUE_TT:
 			case BeetlLexer.FALSE_TT:
+			case BeetlLexer.AJAX_TT:
 			case BeetlLexer.NULL_TT: return statement;
 			case BeetlLexer.STRING_TT: return string;
 			case BeetlLexer.ST_SS_TT: 
