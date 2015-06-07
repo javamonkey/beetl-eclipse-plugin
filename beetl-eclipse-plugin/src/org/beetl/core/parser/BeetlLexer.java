@@ -454,7 +454,7 @@ public class BeetlLexer {
 				}
 
 			}
-			else if (c > '0' && c < '9') {
+			else if (c >= '0' && c <= '9') {
 
 				return numberToken();
 
@@ -549,13 +549,13 @@ public class BeetlLexer {
 				if (this.forwardMatch('&')) {
 					return this.getCharToken(2, AND_TT);
 				} else {
-					return idToken();
+					return this.getSingleErrorToken("Error:" + c);
 				}
 			}else if (c == '|') {
 				if (this.forwardMatch('|')) {
 					return this.getCharToken(2, OR_TT);
 				} else {
-					return idToken();
+					return this.getSingleErrorToken("Error:" + c);
 				}
 			}else if(c=='#'){
 				if(this.forwardMatchsMore('a','j','a','x')){
