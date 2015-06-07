@@ -29,7 +29,7 @@ public class AntlrUtil {
 			Reader reader = new StringReader(doc.get());
 			Transformator sf = new Transformator(delimter[2], delimter[3], delimter[0], delimter[1]);
 			//先假定
-			sf.enableHtmlTagSupport("<#", "</#");
+			sf.enableHtmlTagSupport("<"+delimter[4], "</"+delimter[4],delimter[5]);
 			
 			Reader scriptReader = sf.transform(reader);
 			ANTLRInputStream input;

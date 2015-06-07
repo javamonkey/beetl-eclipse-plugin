@@ -24,6 +24,9 @@ public class BeetlPropertyPage extends PropertyPage {
 	public  static final String ST_END = "st_end";
 	public  static final String PL_START = "pl_start";
 	public  static final String PL_END = "pl_end";
+	public  static final String HTML_TAG = "html_tag";
+	public  static final String HTML_VAR = "html_var";
+	
 	
 	
 	
@@ -36,6 +39,9 @@ public class BeetlPropertyPage extends PropertyPage {
 	Text  stEndText;
 	Text  plStartText;
 	Text  plEndText;
+	Text  htmlTagText;
+	Text  htmlVarText;
+	
 	
 	
 	
@@ -207,6 +213,65 @@ public class BeetlPropertyPage extends PropertyPage {
 		
 	}
 	
+	
+	private void addHtmlTagSection(Composite parent) {
+		Composite composite = createDefaultComposite(parent);
+
+		// Label for owner field
+		Label ownerLabel = new Label(composite, SWT.NONE);
+		ownerLabel.setText("HTMLTag标记");
+
+		// Owner text field
+		this.htmlTagText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		GridData gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(TEXT_FIELD_WIDTH);
+		htmlTagText.setLayoutData(gd);
+		
+		String path="";
+		try {
+			path = getProject().getProject().getPersistentProperty(
+					new QualifiedName("", HTML_TAG));
+			if(path==null){
+				path = "#";
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		htmlTagText.setText(path);
+		// Populate owner text field
+		
+	}
+	
+	private void addHtmlVarSection(Composite parent) {
+		Composite composite = createDefaultComposite(parent);
+
+		// Label for owner field
+		Label ownerLabel = new Label(composite, SWT.NONE);
+		ownerLabel.setText("HTML Var");
+
+		// Owner text field
+		this.htmlVarText = new Text(composite, SWT.SINGLE | SWT.BORDER);
+		GridData gd = new GridData();
+		gd.widthHint = convertWidthInCharsToPixels(TEXT_FIELD_WIDTH);
+		htmlVarText.setLayoutData(gd);
+		
+		String path="";
+		try {
+			path = getProject().getProject().getPersistentProperty(
+					new QualifiedName("", HTML_VAR));
+			if(path==null){
+				path = "var";
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		htmlVarText.setText(path);
+		// Populate owner text field
+		
+	}
+	
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
@@ -223,6 +288,8 @@ public class BeetlPropertyPage extends PropertyPage {
 		this.addStatementEndSection(parent);
 		this.addPsSection(parent);
 		this.addPeSection(parent);
+		this.addHtmlTagSection(parent);
+		this.addHtmlVarSection(parent);
 		
 		return composite;
 	}
@@ -250,6 +317,9 @@ public class BeetlPropertyPage extends PropertyPage {
 		this.stEndText.setText("%>");
 		this.plStartText.setText("${");
 		this.plEndText.setText("}");
+		this.htmlTagText.setText("#");
+		this.htmlVarText.setText("var");
+		
 		
 	}
 	
@@ -274,6 +344,14 @@ public class BeetlPropertyPage extends PropertyPage {
 			getProject().getProject().setPersistentProperty(
 					new QualifiedName("", this.PL_END),
 					this.plEndText.getText());
+			
+			getProject().getProject().setPersistentProperty(
+					new QualifiedName("", this.HTML_TAG),
+					this.htmlTagText.getText());
+			
+			getProject().getProject().setPersistentProperty(
+					new QualifiedName("", this.HTML_VAR),
+					this.htmlVarText.getText());
 			
 		} catch (CoreException e) {
 			return false;

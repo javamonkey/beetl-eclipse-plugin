@@ -190,7 +190,7 @@ public class ProjectUtil {
 //	}
 	
 	public static String[] getProjectDelimter(BeetlEclipseEditor editor) {
-		String[] str = new String[4];
+		String[] str = new String[6];
 		IEditorInput input = editor.getEditorInput();
 		IFile file = getInputFile(input);
 		IProject project = file.getProject();
@@ -211,18 +211,30 @@ public class ProjectUtil {
 		
 			qname = new QualifiedName("", BeetlPropertyPage.PL_START);
 			str[2] = project.getPersistentProperty(qname);
-			if(str[2]==null||str[2].length()==1){
+			if(str[2]==null||str[2].length()==0){
 				str[2] = "${";
 			}
 			qname = new QualifiedName("", BeetlPropertyPage.PL_END);
 			str[3] = project.getPersistentProperty(qname);
-			if(str[3]==null||str[3].length()==1){
+			if(str[3]==null||str[3].length()==0){
 				str[3] = "}";
+			}
+			
+			qname = new QualifiedName("", BeetlPropertyPage.HTML_TAG);
+			str[4] = project.getPersistentProperty(qname);
+			if(str[4]==null||str[4].length()==0){
+				str[4] = "#";
+			}
+			
+			qname = new QualifiedName("", BeetlPropertyPage.HTML_VAR);
+			str[5] = project.getPersistentProperty(qname);
+			if(str[5]==null||str[5].length()==0){
+				str[5] = "var";
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return new String[] { "<%", "%>", "$", "}" };
+			return new String[] { "<%", "%>", "$", "}" ,"#","var"};
 		}
 
 		return str;

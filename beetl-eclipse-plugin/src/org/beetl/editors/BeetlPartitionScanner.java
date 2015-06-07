@@ -111,9 +111,9 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 //			System.out.println("==================");
 //		}
 //		
-		System.out.println(++index+":offset=" + (this.offset + this.partionOffset)
-				+ " len=" + this.length + " type=" + t.getData()+" contentType="+contentType);		
-		System.out.println();
+//		System.out.println(++index+":offset=" + (this.offset + this.partionOffset)
+//				+ " len=" + this.length + " type=" + t.getData()+" contentType="+contentType);		
+//		System.out.println();
 		
 	}
 
