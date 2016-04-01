@@ -410,7 +410,7 @@ public class BeetlLexer {
 					return idToken();
 
 				}
-			}else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+			}else if (c=='$'||c=='_'||c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
 
 				return idToken();
 
@@ -652,7 +652,7 @@ public class BeetlLexer {
 		BeetlToken t = emptyToken();
 		int c;
 		while ((c = source.get()) != source.EOF) {
-			if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+			if (c=='$'||c=='_'||c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
 				source.consume();
 			} else {
 				break;

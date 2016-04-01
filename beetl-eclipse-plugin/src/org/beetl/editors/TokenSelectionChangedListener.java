@@ -28,6 +28,8 @@ public class TokenSelectionChangedListener implements ISelectionChangedListener 
 			return;
 		}
 		
+		if(selction.getText()==null) return ;
+		
 		if(selction.getText().contains("\r")||selction.getText().contains("\n")){
 			return ;
 		}

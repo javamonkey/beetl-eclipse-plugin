@@ -87,14 +87,14 @@ public class BeetlPartitionScanner implements IPartitionTokenScanner {
 			offset = token.start;
 			length = token.end - token.start;
 			this.lastToken = token;	
-			debug(TextToken);
+//			debug(TextToken);
 			return TextToken;
 		} else {
 			//??
 			offset = token.start;
 			length = token.end - token.start;
 			this.lastToken = token;	
-			debug(TextToken);
+//			debug(TextToken);
 			return TextToken;
 		}
 		

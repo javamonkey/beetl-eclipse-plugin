@@ -63,7 +63,10 @@ public class BeetlEclipseEditor extends TextEditor {
 		helpModel = viewer.getVisualAnnotationModel();
 
 		ProjectUtil.foldingDocument(this, (Document) viewer.getDocument());
-
+		
+		
+		
+		
 	}
 
 	protected ISourceViewer createSourceViewer(Composite parent,

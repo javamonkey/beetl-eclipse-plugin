@@ -55,6 +55,7 @@ public class BeetlCharacterPairMatcher implements ICharacterPairMatcher {
 				return null;
 			}
 			Region r = new Region(token.start,token.end-token.start);
+		
 			return r;
 		
 			

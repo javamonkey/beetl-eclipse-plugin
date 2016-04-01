@@ -26,6 +26,7 @@ public class BeetlDocumentProvider extends FileDocumentProvider {
 			setupDocument(element, document);
 			
 		}
+	
 		
 		if (document != null) {
 			IDocumentPartitioner partitioner = new MyFastPartitioner(

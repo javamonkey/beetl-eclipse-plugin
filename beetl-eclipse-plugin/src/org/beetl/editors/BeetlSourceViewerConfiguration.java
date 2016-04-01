@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.beetl.MyIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.IAutoEditStrategy;
-import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -18,8 +18,6 @@ import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguration {
 
@@ -61,6 +59,13 @@ public class BeetlSourceViewerConfiguration extends TextSourceViewerConfiguratio
 		sourceViewer.getSelectionProvider().addSelectionChangedListener(new TokenSelectionChangedListener ());
 		
 		return reconciler;
+	}
+	
+	@Override
+	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer,
+            String contentType){
+		
+		return new BeetlDoubleClickStrategy (editor);
 	}
 
 	@Override
